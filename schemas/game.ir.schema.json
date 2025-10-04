@@ -1,9 +1,8 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "game.ir.schema.json",
   "title": "Game Spec IR",
   "type": "object",
-  "required": ["version", "meta", "story", "mechanics", "moves", "scenes", "assets", "dialogue", "validators"],
+  "required": ["version", "meta", "storyline"],
   "properties": {
     "version": { "type": "string" },
     "irSchema": { "type": "string" },
@@ -28,52 +27,224 @@
         }
       }
     },
-    "story": {
+    "storyline": {
       "type": "object",
+      "required": ["game", "main_character", "characters", "scenes", "skill_tree", "weapons", "armor", "consumables", "key_items", "cutscenes", "world_map"],
       "properties": {
-        "world": { "type": ["string", "null"] },
-        "arcs": { "type": "array" },
+        "game": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "genre": { "type": "string" },
+            "summary": { "type": "string" },
+            "world_setting": { "type": "string" }
+          }
+        },
+        "main_character": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "string" },
+            "name": { "type": "string" },
+            "description": { "type": "string" },
+            "class": { "type": "string" },
+            "race": { "type": "string" },
+            "level": { "type": "integer" },
+            "stats": {
+              "type": "object",
+              "properties": {
+                "strength": { "type": "integer" },
+                "dexterity": { "type": "integer" },
+                "intelligence": { "type": "integer" },
+                "charisma": { "type": "integer" },
+                "luck": { "type": "integer" }
+              }
+            },
+            "skills": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "level": { "type": "integer" },
+                  "requirements": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            },
+            "inventory": { "type": "array", "items": { "type": "string" } },
+            "equipment": {
+              "type": "object",
+              "properties": {
+                "weapon": { "type": "string" },
+                "armor": { "type": "string" },
+                "accessory": { "type": "string" }
+              }
+            }
+          }
+        },
         "characters": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["id", "name", "appearance", "archetype"],
             "properties": {
               "id": { "type": "string" },
               "name": { "type": "string" },
-              "appearance": { "type": "string" },
-              "archetype": { "type": "string" }
+              "role": { "type": "string" },
+              "description": { "type": "string" },
+              "abilities": { "type": "array", "items": { "type": "string" } },
+              "mood": { "type": "string" }
             }
           }
         },
-        "decisions": { "type": "array" },
-        "scenes": { "type": "array" }
-      }
-    },
-    "mechanics": { "type": "object" },
-    "moves": { "type": "array" },
-    "scenes": { "type": "array" },
-    "assets": { "type": "object" },
-    "dialogue": { "type": "object" },
-    "validators": {
-      "type": "object",
-      "properties": {
-        "globalConstraints": {
+        "scenes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer" },
+              "title": { "type": "string" },
+              "setting": { "type": "string" },
+              "characters": { "type": "array", "items": { "type": "string" } },
+              "events": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string", "enum": ["dialogue", "battle", "cutscene", "puzzle", "exploration"] },
+                    "description": { "type": "string" },
+                    "dialogue": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "speaker": { "type": "string" },
+                          "line": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "skill_tree": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "branch": { "type": "string" },
+              "skills": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "effect": { "type": "string" },
+                    "requirements": { "type": "array", "items": { "type": "string" } }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "weapons": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "damage": { "type": "integer" },
+              "requirements": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "armor": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "defense": { "type": "integer" },
+              "requirements": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "consumables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "effects": {
+                "type": "object",
+                "properties": {
+                  "hp_restore": { "type": "integer" },
+                  "mana_restore": { "type": "integer" }
+                }
+              },
+              "requirements": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "key_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "effect": { "type": "string" }
+            }
+          }
+        },
+        "cutscenes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer" },
+              "title": { "type": "string" },
+              "description": { "type": "string" },
+              "dialogue": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "speaker": { "type": "string" },
+                    "line": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "world_map": {
           "type": "object",
           "properties": {
-            "tileSize": { "type": "integer", "enum": [16, 32] },
-            "paletteMaxColors": { "type": "integer", "maximum": 16 },
-            "fps": { "type": "integer", "const": 60 },
-            "timestepMs": { "type": "integer", "const": 16 },
-            "anchorFeetY": { "type": "number" },
-            "hitboxGrid": { "type": "number", "enum": [0.5, 1] },
-            "maxFramesPerClip": { "type": "integer", "maximum": 8 }
-          },
-          "required": ["tileSize", "paletteMaxColors", "fps", "timestepMs", "anchorFeetY", "hitboxGrid", "maxFramesPerClip"]
+            "regions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "connections": { "type": "array", "items": { "type": "string" } },
+                  "danger_level": { "type": "integer" }
+                }
+              }
+            }
+          }
         }
-      },
-      "required": ["globalConstraints"]
-    },
-    "provenance": { "type": ["object", "null"] }
+      }
+    }
   }
 }
