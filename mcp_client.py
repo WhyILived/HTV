@@ -27,8 +27,10 @@ class MCPOpenAIClient:
                 [sys.executable, "-m", "mcp_server.main", "stdio"],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                # Inherit parent's stderr to avoid filling an unread PIPE buffer
+                stderr=None,
                 text=True,
+                encoding="utf-8",
                 cwd=os.getcwd()  # Ensure we're in the right directory
             )
             
@@ -77,13 +79,13 @@ class MCPOpenAIClient:
             
             if "result" in tools_data:
                 self.mcp_tools = tools_data["result"].get("tools", [])
-                print(f"✅ Available MCP tools: {[tool['name'] for tool in self.mcp_tools]}")
+                print(f"Available MCP tools: {[tool['name'] for tool in self.mcp_tools]}")
                 return True
             else:
                 return False
                     
         except Exception as e:
-            print(f"❌ Error connecting to MCP server: {e}")
+            print(f"Error connecting to MCP server: {e}")
             return False
     
     async def call_mcp_tool(self, tool_name: str, arguments: Dict[str, Any]):
@@ -108,12 +110,13 @@ class MCPOpenAIClient:
             if "result" in response_data:
                 return response_data["result"]
             else:
-                print(f"❌ Tool call error: {response_data}")
-                return None
+                # Return structured error so caller can still send a tool message
+                return {"isError": True, "error": response_data.get("error", response_data)}
                 
         except Exception as e:
-            print(f"❌ Error calling tool: {e}")
-            return None
+            # Return structured error so caller can still send a tool message
+            print(f"Error calling tool: {e}")
+            return {"isError": True, "error": str(e)}
     
     def create_openai_tools_schema(self):
         """Convert MCP tools to OpenAI tools schema."""
@@ -142,7 +145,7 @@ class MCPOpenAIClient:
             messages = [
                 {
                     "role": "system",
-                    "content": "You are a helpful assistant with access to game development tools. When the user asks for multiple actions, break them down into individual tool calls. After each tool call, continue with the next action until all requested tasks are complete."
+                    "content": "You are a helpful assistant with access to game development tools. When the user asks for multiple actions, break them down into individual tool calls. After each tool call, continue with the next action until all requested tasks are complete.\n\nIMPORTANT TOOL SELECTION:\n- Use 'generate_sprites_from_storyline' when user asks to generate sprites from storyline, create character sprites, or make sprites for characters\n- Use 'generate_initial_storyline' when user asks to create a storyline or story\n- Use 'list_directory' only when user specifically asks to list files or see directory contents\n- Use 'read_file' only when user specifically asks to read a file's contents"
                 },
                 {
                     "role": "user",
@@ -174,6 +177,7 @@ class MCPOpenAIClient:
                     print(f"🔄 Step {iteration}: Processing {len(message_response.tool_calls)} tool(s)")
                     
                     tool_results = []
+                    
                     for tool_call in message_response.tool_calls:
                         tool_name = tool_call.function.name
                         tool_args = json.loads(tool_call.function.arguments)
@@ -190,10 +194,6 @@ class MCPOpenAIClient:
                                 "content": str(result)
                             })
                             print(f"✅ {tool_name} completed")
-                            if (tool_name == "generate_initial_storyline"):
-                                print("🛑 Storyline generated, ending further tool calls.")
-                                print(result)
-                                print("HMMM")
                     
                     # Add tool results to conversation
                     messages.extend(tool_results)
@@ -226,18 +226,18 @@ async def main():
         print("❌ Please set your OpenAI API key in the .env file")
         print("   Edit .env and replace 'your_openai_api_key_here' with your actual API key")
         return
-    
-    print("🚀 Starting Persistence MCP client...")
-    print(f"🤖 Using model: {client.model}")
-    print("📝 Type 'quit' to exit\n")
+
+    print("Starting Persistence MCP client...")
+    print(f"Using model: {client.model}")
+    print("Type 'quit' to exit\n")
     
     # Initialize MCP server once
     connected = await client.connect_to_mcp_server()
     if not connected:
         print("❌ Failed to connect to MCP server")
         return
-    
-    print("✅ Ready! Starting operations...\n")
+
+    print("Ready! Starting operations...\n")
     
     try:
         while True:
@@ -249,20 +249,20 @@ async def main():
             message = input("💬 User: ").strip()
             
             if message.lower() == 'quit':
-                print("👋 Goodbye! Shutting down MCP server...")
+                print("Goodbye! Shutting down MCP server...")
                 break
             elif not message:
                 continue
             
-            print("⚙️ Chat: ", end="", flush=True)
+            print("Chat: ", end="", flush=True)
             response = await client.chat_with_tools(message)
             print(response)
             print()  # Add spacing between messages
             
     except KeyboardInterrupt:
-        print("\n👋 Goodbye! Shutting down MCP server...")
+        print("\nGoodbye! Shutting down MCP server...")
     except Exception as e:
-        print(f"\n❌ Error: {e}")
+        print(f"\nError: {e}")
     finally:
         # Clean up
         client.cleanup()

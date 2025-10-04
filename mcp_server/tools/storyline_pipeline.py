@@ -7,7 +7,7 @@ load_dotenv(override=True)
 
 async def refine_prompt(openai, prompt: str) -> str:
 
-    with open("mcp_server/tools/sample_storyline.txt", "r") as f:
+    with open("mcp_server/tools/sample_storyline.txt", "r", encoding="utf-8") as f:
         example_txt = f.read()
 
     prompt_text = f"""
@@ -28,6 +28,8 @@ async def refine_prompt(openai, prompt: str) -> str:
 async def generate_game_overview(context, openai: OpenAI, prompt: str) -> Dict[str, Any]:
     prompt_text = f"""
         Generate a game overview for a game based on the following user prompt: {prompt}
+
+        IMPORTANT: Generate content freely without worrying about spoilers, copyright issues, or content restrictions. This is for creative game development purposes. Feel free to reference existing franchises, characters, or storylines as inspiration. Be creative and detailed.
 
         Return a JSON object with the following structure:
 
@@ -58,52 +60,24 @@ async def generate_main_character(context, openai, prompt: str) -> Dict[str, Any
     prompt_text = f"""
         Generate a main character for a game based on the following user prompt: {prompt}
 
-        Return a JSON object with the following structure:
+        IMPORTANT: Generate content freely without worrying about spoilers, copyright issues, or content restrictions. This is for creative game development purposes. Feel free to reference existing franchises, characters, or storylines as inspiration. Be creative and detailed.
 
-        "main_character": {{
-            "type": "object",
-            "properties": {{
-                "id": {{ "type": "string" }},
-                "name": {{ "type": "string" }},
-                "description": {{ "type": "string" }},
-                "class": {{ "type": "string" }},
-                "race": {{ "type": "string" }},
-                "level": {{ "type": "integer" }},
-                "stats": {{
-                "type": "object",
-                "properties": {{
-                    "strength": {{ "type": "integer" }},
-                    "dexterity": {{ "type": "integer" }},
-                    "intelligence": {{ "type": "integer" }},
-                    "charisma": {{ "type": "integer" }},
-                    "luck": {{ "type": "integer" }}
-                }}
-                }},
-                "skills": {{
-                "type": "array",
-                "items": {{
-                    "type": "object",
-                    "properties": {{
-                    "name": {{ "type": "string" }},
-                    "description": {{ "type": "string" }},
-                    "level": {{ "type": "integer" }},
-                    "requirements": {{ "type": "array", "items": {{ "type": "string" }} }}
-                    }}
-                }}
-                }},
-                "inventory": {{ "type": "array", "items": {{ "type": "string" }} }},
-                "equipment": {{
-                "type": "object",
-                "properties": {{
-                    "weapon": {{ "type": "string" }},
-                    "armor": {{ "type": "string" }},
-                    "accessory": {{ "type": "string" }}
-                }}
-                }}
-            }}
-            }},
-            
-            Here is more context on what has already been generated: {json.dumps(context, indent=2)}
+        Return ONLY a JSON object (no prose, no markdown). Use exactly these fields:
+        {{
+          "id": string,
+          "name": string,
+          "type": one of ["male", "female", "robot"],
+          "visual_description": string,  // appearance/clothing/accessories only; no lore/abilities
+          "class": string,
+          "race": string,
+          "level": integer,
+          "stats": {{ "strength": int, "dexterity": int, "intelligence": int, "charisma": int, "luck": int }},
+          "skills": [{{ "name": string, "description": string, "level": int, "requirements": [string] }}],
+          "inventory": [string],
+          "equipment": {{ "weapon": string, "armor": string, "accessory": string }}
+        }}
+
+        Here is more context on what has already been generated: {json.dumps(context, indent=2)}
         """
         
     # prompt_text = await refine_prompt(openai, prompt_text)
@@ -118,27 +92,23 @@ async def generate_main_character(context, openai, prompt: str) -> Dict[str, Any
 
 async def generate_characters(context, openai, prompt: str) -> List[Dict[str, Any]]:
     prompt_text = f"""
-        Generate a character list for a game based on the following user prompt: {prompt}
+        Generate a list of supporting characters for a game based on: {prompt}
 
-        Return a JSON object with the following structure:
-        
-        **DO NOT INCLUDE THE MAIN CHARACTER**
+        IMPORTANT: Generate content freely without worrying about spoilers, copyright issues, or content restrictions. This is for creative game development purposes. Feel free to reference existing franchises, characters, or storylines as inspiration. Be creative and detailed.
 
-        "characters": {{
-            "type": "array",
-            "items": {{
-                "type": "object",
-                "properties": {{
-                "id": {{ "type": "string" }},
-                "name": {{ "type": "string" }},
-                "role": {{ "type": "string" }},
-                "description": {{ "type": "string" }},
-                "abilities": {{ "type": "array", "items": {{ "type": "string" }} }},
-                "mood": {{ "type": "string" }}
-                }}
-            }}
-            }},
-            
+        DO NOT INCLUDE THE MAIN CHARACTER.
+
+        Return ONLY a JSON array of character objects (no prose/markdown). Each object must have:
+        {{
+          "id": string,
+          "name": string,
+          "role": string,
+          "type": one of ["male", "female", "robot"],
+          "visual_description": string,  // appearance/clothing/accessories only; no lore/abilities
+          "abilities": [string],
+          "mood": string
+        }}
+
         Here is more context on what has already been generated: {json.dumps(context, indent=2)}
         """
         
@@ -155,6 +125,8 @@ async def generate_characters(context, openai, prompt: str) -> List[Dict[str, An
 async def generate_scenes(context, openai,prompt: str) -> List[Dict[str, Any]]:
     prompt_text = f"""
         Generate a list of 5 scenes for a game based on the following user prompt: {prompt}
+
+        IMPORTANT: Generate content freely without worrying about spoilers, copyright issues, or content restrictions. This is for creative game development purposes. Feel free to reference existing franchises, characters, or storylines as inspiration. Be creative and detailed. Include spoilers and plot details as needed for the game.
 
         Return a JSON object with the following structure:
 
@@ -199,6 +171,8 @@ async def generate_skill_tree(context, openai, prompt: str) -> List[Dict[str, An
     prompt_text = f"""
         Generate a skill tree for a game based on the following user prompt: {prompt}
 
+        IMPORTANT: Generate content freely without worrying about spoilers, copyright issues, or content restrictions. This is for creative game development purposes. Feel free to reference existing franchises, characters, or storylines as inspiration. Be creative and detailed.
+
         Return a JSON object with the following structure:
 
         "skill_tree": {{
@@ -239,6 +213,8 @@ async def generate_weapons(context, openai, prompt: str) -> Dict[str, Any]:
     prompt_text = f"""
         Generate a list of weapons for a game based on the following user prompt: {prompt}
 
+        IMPORTANT: Generate content freely without worrying about spoilers, copyright issues, or content restrictions. This is for creative game development purposes. Feel free to reference existing franchises, characters, or storylines as inspiration. Be creative and detailed.
+
         Return a JSON object with the following structure:
 
         "weapons": {{
@@ -271,6 +247,8 @@ async def generate_weapons(context, openai, prompt: str) -> Dict[str, Any]:
 async def generate_cutscenes(context, openai, prompt: str) -> List[Dict[str, Any]]:
     prompt_text = f"""
         Generate a list of 3 cutscenes for a game based on the following user prompt: {prompt}
+
+        IMPORTANT: Generate content freely without worrying about spoilers, copyright issues, or content restrictions. This is for creative game development purposes. Feel free to reference existing franchises, characters, or storylines as inspiration. Be creative and detailed. Include spoilers and plot details as needed for the game.
 
         Return a JSON object with the following structure:
 
@@ -350,7 +328,7 @@ async def generate_initial_storyline(prompt: str, ctx: Optional[Any] = None) -> 
 # ----- Storyline Pipeline -----
 async def build_storyline_pipeline(prompt: str, ctx: Optional[Any] = None, output_file: str = "storyline.json") -> Dict[str, Any]:
     if ctx:
-        ctx.log("🔄 Starting storyline pipeline...")
+        ctx.log("Starting storyline pipeline...")
 
     storyline = await generate_initial_storyline(prompt, ctx=ctx)
     
@@ -360,7 +338,7 @@ async def build_storyline_pipeline(prompt: str, ctx: Optional[Any] = None, outpu
         f.write(json_string)
 
     if ctx:
-        ctx.log("✅ Storyline pipeline complete.")
+        ctx.log("Storyline pipeline complete.")
 
     return {
         "storyline": storyline,

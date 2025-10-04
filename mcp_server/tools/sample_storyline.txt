@@ -9,7 +9,8 @@
     "main_character": {
       "id": "npc001",
       "name": "Nikola Tesla",
-      "description": "A visionary inventor obsessed with harnessing the power of electricity for the benefit of humanity.",
+      "type": "male",
+      "visual_description": "A tall, thin man with dark hair and mustache, wearing a formal black suit and lab coat, with intense eyes and an air of focused determination.",
       "class": "Inventor",
       "race": "Human",
       "level": 10,
@@ -52,7 +53,8 @@
         "id": "npc002",
         "name": "Thomas Edison",
         "role": "Rival",
-        "description": "A successful and cunning inventor determined to dominate the electricity market, often clashing with Tesla's ideals.",
+        "type": "male",
+        "visual_description": "A stocky, well-dressed businessman in his 40s with a receding hairline, wearing expensive suits and a confident, calculating expression.",
         "abilities": ["Patented Schemes", "Financial Manipulation"],
         "mood": "Ambitious"
       },
@@ -60,7 +62,8 @@
         "id": "npc003",
         "name": "George Westinghouse",
         "role": "Ally",
-        "description": "Tesla's investor and supporter, who believes in alternating current and helps him in the War of Currents.",
+        "type": "male",
+        "visual_description": "A distinguished gentleman in his 50s with graying hair and beard, wearing a fine business suit with a warm, supportive demeanor.",
         "abilities": ["Wealth Support", "Engineering Insight"],
         "mood": "Loyal"
       }
