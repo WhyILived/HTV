@@ -6,15 +6,18 @@ from typing import Dict, List, Any, Optional, Tuple
 
 # ---------- CONFIG ----------
 WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_HEIGHT = 500
 FPS = 30
 PLAYER_SPEED = 180
 NPC_SIZE = (36, 48)
 PLAYER_SIZE = (36, 48)
-WORLD_BOUNDS = pygame.Rect(0, 0, 1200, 1200)  # Smaller world
+WORLD_BOUNDS = pygame.Rect(0, 0, 1000, 600)  # Smaller world
 INTERACT_DISTANCE = 48
 MINIMAP_SIZE = 150
 MINIMAP_POS = (WINDOW_WIDTH - MINIMAP_SIZE - 10, 10)
+BACKGROUND = pygame.image.load("assets/background.png")
+BACKGROUND_COLOR_KEY = pygame.image.load("assets/background_color_key.png")
+WALKABLE_COLOR = (229, 120, 160)
 
 WHITE = (255, 255, 255)
 BLUE = (100, 150, 255)
@@ -37,6 +40,15 @@ SAMPLE_DATA = {
 }
 
 # ---------- UTILITIES ----------
+def is_position_walkable(pos: Tuple[int, int], color_key_surface, walkable_color: Tuple[int, int, int]) -> bool:
+    """Check if a position is on a walkable color in the color key surface"""
+    x, y = pos
+    if 0 <= x < color_key_surface.get_width() and 0 <= y < color_key_surface.get_height():
+        pixel_color = color_key_surface.get_at((x, y))
+        # Compare RGB values (ignore alpha)
+        return pixel_color[:3] == walkable_color
+    return False
+
 def load_storyline(filename="storyline.json") -> Dict[str, Any]:
     if os.path.exists(filename):
         try:
@@ -65,7 +77,7 @@ class Player(Entity):
         w,h = PLAYER_SIZE
         super().__init__(data.get("name","Player"), pygame.Rect(pos[0], pos[1], w,h), BLUE)
         self.speed = PLAYER_SPEED
-    def update(self, dt, obstacles):
+    def update(self, dt, obstacles, color_key_surface=None):
         keys = pygame.key.get_pressed()
         vx = vy = 0
         if keys[pygame.K_a] or keys[pygame.K_LEFT]: vx -= 1
@@ -74,12 +86,40 @@ class Player(Entity):
         if keys[pygame.K_s] or keys[pygame.K_DOWN]: vy += 1
         v = pygame.Vector2(vx, vy)
         if v.length_squared()>0: v = v.normalize() * self.speed
+        
+        # Check horizontal movement
         new_rect = self.rect.copy()
         new_rect.x += int(v.x*dt)
-        if not any(new_rect.colliderect(o) for o in obstacles) and WORLD_BOUNDS.contains(new_rect): self.rect = new_rect
+        if not any(new_rect.colliderect(o) for o in obstacles) and WORLD_BOUNDS.contains(new_rect):
+            # Check if new position is on walkable color
+            if color_key_surface is None or self._is_rect_walkable(new_rect, color_key_surface):
+                self.rect = new_rect
+        
+        # Check vertical movement
         new_rect = self.rect.copy()
         new_rect.y += int(v.y*dt)
-        if not any(new_rect.colliderect(o) for o in obstacles) and WORLD_BOUNDS.contains(new_rect): self.rect = new_rect
+        if not any(new_rect.colliderect(o) for o in obstacles) and WORLD_BOUNDS.contains(new_rect):
+            # Check if new position is on walkable color
+            if color_key_surface is None or self._is_rect_walkable(new_rect, color_key_surface):
+                self.rect = new_rect
+    
+    def _is_rect_walkable(self, rect, color_key_surface):
+        """Check if a rectangle is on walkable terrain by sampling multiple points"""
+        # Sample points around the player's feet and center
+        sample_points = [
+            (rect.centerx, rect.bottom - 5),  # Bottom center
+            (rect.left + 5, rect.bottom - 5),  # Bottom left
+            (rect.right - 5, rect.bottom - 5),  # Bottom right
+            (rect.centerx, rect.centery),  # Center
+        ]
+        
+        # Check if at least 3 out of 4 sample points are walkable
+        walkable_count = 0
+        for point in sample_points:
+            if is_position_walkable(point, color_key_surface, WALKABLE_COLOR):
+                walkable_count += 1
+        
+        return walkable_count >= 3
 
 class NPC(Entity):
     def __init__(self, data: Dict[str, Any], pos: Tuple[int,int]):
@@ -212,10 +252,10 @@ def draw_scene_intro(screen, scene, timer):
     if not scene or timer <= 0:
         return
     
-    # Semi-transparent overlay
-    overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
-    overlay.fill((0, 0, 0, 150))
-    screen.blit(overlay, (0, 0))
+    # # Semi-transparent overlay
+    # overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
+    # overlay.fill((0, 0, 0, 150))
+    # screen.blit(overlay, (0, 0))
     
     # Scene title
     title_font = pygame.font.SysFont(None, 48)
@@ -306,11 +346,11 @@ def run_game(storyline):
 
     # Obstacles - positioned to avoid player spawn area
     obstacles = [
-        pygame.Rect(500, 300, 150, 20),   # Moved away from center
-        pygame.Rect(200, 500, 30, 200),   # Moved away from center  
-        pygame.Rect(800, 200, 100, 30),   # Moved away from center
-        pygame.Rect(100, 100, 80, 80),    # Corner obstacle
-        pygame.Rect(1000, 1000, 100, 100) # Far corner obstacle
+        # pygame.Rect(500, 300, 150, 20),   # Moved away from center
+        # pygame.Rect(200, 500, 30, 200),   # Moved away from center  
+        # pygame.Rect(800, 200, 100, 30),   # Moved away from center
+        # pygame.Rect(100, 100, 80, 80),    # Corner obstacle
+        # pygame.Rect(1000, 1000, 100, 100) # Far corner obstacle
     ]
 
     # Player
@@ -440,7 +480,7 @@ def run_game(storyline):
                     scene_intro_timer = 0
 
         # Update
-        player.update(dt, obstacles)
+        player.update(dt, obstacles, BACKGROUND_COLOR_KEY)
         
         # Update scene intro timer
         if show_scene_intro and scene_intro_timer > 0:
@@ -462,6 +502,7 @@ def run_game(storyline):
 
         # Draw
         screen.fill((20,24,30))
+        screen.blit(BACKGROUND, (-cam[0], -cam[1]))
 
         # Obstacles
         for o in obstacles: pygame.draw.rect(screen,(120,120,120),o.move(-cam[0],-cam[1]))
