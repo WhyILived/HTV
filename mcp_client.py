@@ -22,15 +22,14 @@ class MCPOpenAIClient:
     async def connect_to_mcp_server(self):
         """Connect to the MCP server and get available tools."""
         try:
-            python_exe = sys.executable
+            # Start MCP server process - Windows compatible
             self.process = subprocess.Popen(
-                [python_exe, "-m", "mcp_server.main", "stdio"],
+                [sys.executable, "-m", "mcp_server.main", "stdio"],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-                encoding="utf-8",
-                bufsize=1
+                cwd=os.getcwd()  # Ensure we're in the right directory
             )
             
             # Initialize the session
