@@ -1,135 +1,324 @@
 {
-  "storyline": {
-    "game": {
-      "title": "Tesla: Sparks of Genius",
-      "genre": "Historical Action RPG",
-      "summary": "Step into the electrifying world of Nikola Tesla, a brilliant inventor battling the forces of ambition, rivalry, and obsession. Navigate through a world of invention, sabotage, and discovery in a story where science meets drama.",
-      "world_setting": "Late 19th to early 20th century America and Europe, with a semi-realistic, steampunk aesthetic."
+  "game": {
+    "title": "Frozen Destiny: The Epic Journey of Elise",
+    "genre": "Fantasy Adventure",
+    "summary": "Join Elise on a perilous quest as she embarks on a frozen-themed adventure filled with hope, epic battles, and unexpected twists.",
+    "world_setting": "In a mystical world where icy landscapes and snow-covered mountains dominate, Elise must navigate through treacherous terrain to fulfill her destiny."
+  },
+  "main_character": {
+    "id": "elise_the_protector",
+    "name": "Elise",
+    "type": "Human",
+    "visual_description": "string",
+    "class": "Warrior",
+    "level": 1,
+    "stats": {
+      "strength": 8,
+      "dexterity": 6,
+      "intelligence": 4,
+      "charisma": 5,
+      "luck": 7
     },
-    "main_character": {
-      "id": "npc001",
-      "name": "Nikola Tesla",
-      "type": "male",
-      "visual_description": "A tall, thin man with dark hair and mustache, wearing a formal black suit and lab coat, with intense eyes and an air of focused determination.",
-      "class": "Inventor",
-      "race": "Human",
-      "level": 10,
-      "stats": {
-        "strength": 4,
-        "dexterity": 7,
-        "intelligence": 10,
-        "charisma": 6,
-        "luck": 5
-      },
+    "inventory": {
+      "weapons": [],
+      "armor": [],
+      "accessories": []
+    }
+  },
+  "characters": [
+    {
+      "id": "lucinda_the_sorceress",
+      "name": "Lucinda",
+      "role": "Ally",
+      "visual_description": "A powerful sorceress who can control the elements, Lucinda aids Elise on her quest with her mastery over ice magic.",
+      "outgoing_dialogue": [
+        "Hi. You are Elise, right?",
+        "I'm Lucinda. I've been waiting for you.",
+        "I'm here to help you on your quest."
+      ],
+      "incoming_dialog": [
+        "Yes, I am.",
+        "I've heard so much about you!",
+        "Thank you so much..."
+      ],
+      "mood": "Determined"
+    },
+    {
+      "id": "vornir_the_ice_king",
+      "name": "Vornir",
+      "role": "Antagonist",
+      "description": "The ruthless Ice King who seeks to plunge the world into eternal winter, standing in Elise's way with his icy minions.",
+      "outgoing_dialogue": [
+        "You are Elise, right?",
+        "I'm Vornir. I've been waiting for you.",
+        "I'm here to stop you."
+      ],
+      "incoming_dialog": [
+        "Yes, I am.",
+        "I've heard about you...",
+        "You won't be able to."
+      ],
+      "mood": "Malevolent"
+    },
+    {
+      "id": "thalia_the_wandering_merchant",
+      "name": "Thalia",
+      "role": "Ally",
+      "description": "A mysterious merchant who traverses the frozen lands, offering magical artifacts and valuable information to Elise along her journey.",
+      "outgoing_dialogue": [
+        "Hello. You are Elise, right?",
+        "I'm Thalia. I've been waiting for you.",
+        "I'm here to help you on your quest."
+      ],
+      "incoming_dialog": [
+        "Yes, I am.",
+        "I've heard so much about you!",
+        "Thank you so much..."
+      ],
+      "mood": "Enigmatic"
+    },
+    {
+      "id": "frost_guardian",
+      "name": "Frost Guardian",
+      "role": "Antagonist",
+      "description": "Ancient ice guardians that protect the Frozen Citadel with their frozen spears and chilling presence.",
+      "outgoing_dialogue": [
+        "You are Elise, right?",
+        "I'm Frost Guardian. I've been waiting for you.",
+        "I'm here to stop you."
+      ],
+      "incoming_dialog": [
+        "Yes, I am.",
+        "I've heard about you...",
+        "You won't be able to."
+      ],
+      "mood": "Hostile"
+    },
+    {
+      "id": "forest_spirit",
+      "name": "Forest Spirit",
+      "role": "Neutral",
+      "description": "Mystical spirits of the frozen forest who test the resolve of those who enter their domain.",
+      "outgoing_dialogue": [
+        "You are Elise, right?",
+        "I'm Forest Spirit. I've been waiting for you.",
+        "I'm here to help you on your quest."
+      ],
+      "incoming_dialog": [
+        "Yes, I am.",
+        "I've heard so much about you!",
+        "Thank you so much..."
+      ],
+      "mood": "Mysterious"
+    },
+    {
+      "id": "blizzard_wolf",
+      "name": "Blizzard Wolf",
+      "role": "Antagonist",
+      "description": "Fierce wolves that hunt in the blizzard peaks, their howls echoing through the frozen winds.",
+      "outgoing_dialogue": [
+        "You are Elise, right?",
+        "I'm Blizzard Wolf. I've been waiting for you.",
+        "I'm here to stop you."
+      ],
+      "incoming_dialog": [
+        "Yes, I am.",
+        "I've heard about you...",
+        "You won't be able to."
+      ],
+      "mood": "Aggressive"
+    },
+    {
+      "id": "ice_cavern_troll",
+      "name": "Ice Cavern Troll",
+      "role": "Antagonist",
+      "description": "Massive trolls that dwell in the ice caverns, wielding clubs made of frozen stone.",
+      "outgoing_dialogue": [
+        "You are Elise, right?",
+        "I'm Ice Cavern Troll. I've been waiting for you.",
+        "I'm here to stop you."
+      ],
+      "incoming_dialog": [
+        "Yes, I am.",
+        "I've heard about you...",
+        "You won't be able to."
+      ],
+      "mood": "Brutal"
+    }
+  ],
+  "scenes": [
+    {
+      "id": 1,
+      "title": "The Frozen Citadel",
+      "setting": "Elise arrives at the Frozen Citadel, a massive ice fortress where Vornir, the Ice King, resides.",
+      "characters": [
+        "vornir_the_ice_king",
+        "frost_guardian"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "The Frozen Forest",
+      "setting": "Elise ventures into the Frozen Forest, where ancient spirits roam and icy creatures lurk in the shadows.",
+      "characters": [
+        "thalia_the_wandering_merchant",
+        "forest_spirit"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "The Blizzard Peak",
+      "setting": "Elise climbs the treacherous Blizzard Peak, where howling winds and blizzards threaten to throw her off course.",
+      "characters": [
+        "lucinda_the_sorceress",
+        "blizzard_wolf"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "The Ice Caverns",
+      "setting": "Elise delves into the deep Ice Caverns, where Vornir's minions await with frosty claws and icy traps.",
+      "characters": [
+        "ice_cavern_troll"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "The Frozen Throne Room",
+      "setting": "Elise confronts Vornir in his Frozen Throne Room, where the final battle for the fate of the frozen world unfolds.",
+      "characters": [
+        "vornir_the_ice_king",
+        "lucinda_the_sorceress"
+      ]
+    }
+  ],
+  "skill_tree": [
+    {
+      "branch": "Ice Magic",
       "skills": [
         {
-          "name": "Electric Shock",
-          "description": "Unleash a controlled burst of electricity to stun enemies.",
-          "level": 1,
-          "requirements": []
+          "name": "Glacial Shards",
+          "effect": "Summon sharp icicles to pierce enemies",
+          "requirements": [
+            "Icy Blast"
+          ]
         },
         {
-          "name": "Tesla Coil",
-          "description": "Summon a miniature Tesla Coil to attack multiple foes in the area.",
-          "level": 2,
-          "requirements": ["Electric Shock"]
-        },
-        {
-          "name": "Innovation Burst",
-          "description": "Instantly create a device that grants temporary buffs to allies.",
-          "level": 3,
-          "requirements": ["Tesla Coil"]
+          "name": "Frozen Avalanche",
+          "effect": "Create a massive snowstorm to freeze all foes in an area",
+          "requirements": [
+            "Glacial Shards"
+          ]
         }
-      ],
-      "inventory": ["Notebook of Inventions", "Prototype Coil", "Mechanical Tools"],
-      "equipment": {
-        "weapon": "Portable Tesla Coil",
-        "armor": "Lab Coat",
-        "accessory": "Electrified Gloves"
-      }
+      ]
     },
-    "characters": [
-      {
-        "id": "npc002",
-        "name": "Thomas Edison",
-        "role": "Rival",
-        "type": "male",
-        "visual_description": "A stocky, well-dressed businessman in his 40s with a receding hairline, wearing expensive suits and a confident, calculating expression.",
-        "abilities": ["Patented Schemes", "Financial Manipulation"],
-        "mood": "Ambitious"
-      },
-      {
-        "id": "npc003",
-        "name": "George Westinghouse",
-        "role": "Ally",
-        "type": "male",
-        "visual_description": "A distinguished gentleman in his 50s with graying hair and beard, wearing a fine business suit with a warm, supportive demeanor.",
-        "abilities": ["Wealth Support", "Engineering Insight"],
-        "mood": "Loyal"
-      }
-    ],
-    "scenes": [
-      {
-        "id": 1,
-        "title": "The Arrival in New York",
-        "setting": "1884, New York City",
-        "characters": ["Nikola Tesla", "Thomas Edison"],
-        "events": [
-          {
-            "type": "dialogue",
-            "description": "Tesla meets Edison and pitches his AC ideas.",
-            "dialogue": [
-              {"speaker": "Nikola Tesla", "line": "I can provide power to every home without loss."},
-              {"speaker": "Thomas Edison", "line": "Impossible! Direct current is the only way forward."}
-            ]
-          }
-        ]
-      },
-      {
-        "id": 2,
-        "title": "The War of Currents",
-        "setting": "Various cities in the US",
-        "characters": ["Nikola Tesla", "Thomas Edison", "George Westinghouse"],
-        "events": [
-          {
-            "type": "battle",
-            "description": "Tesla demonstrates the safety and efficiency of AC electricity against Edison's propaganda machines.",
-            "dialogue": []
-          }
-        ]
-      }
-    ],
-    "skill_tree": [
-      {
-        "branch": "Electric Mastery",
-        "skills": [
-          {"name": "Electric Shock", "effect": "Stuns enemy", "requirements": []},
-          {"name": "Tesla Coil", "effect": "AoE electricity attack", "requirements": ["Electric Shock"]},
-          {"name": "Lightning Surge", "effect": "Massive damage to machines", "requirements": ["Tesla Coil"]}
-        ]
-      },
-      {
-        "branch": "Inventor's Ingenuity",
-        "skills": [
-          {"name": "Prototype Creation", "effect": "Create temporary inventions", "requirements": []},
-          {"name": "Innovation Burst", "effect": "Buffs allies and debuffs enemies", "requirements": ["Prototype Creation"]}
-        ]
-      }
-    ],
-    "weapons": [
-      {"id": "wpn001", "name": "Portable Tesla Coil", "description": "A coil that generates powerful electric blasts.", "damage": 15, "requirements": ["Electric Mastery"]},
-      {"id": "wpn002", "name": "Sparking Rod", "description": "A rod that releases bursts of electricity.", "damage": 8, "requirements": []}
-    ],
-    "cutscenes": [
-      {
-        "id": 1,
-        "title": "The First Public Demonstration",
-        "description": "Tesla demonstrates the AC motor before an amazed audience.",
-        "dialogue": [
-          {"speaker": "Nikola Tesla", "line": "Behold, the future of electricity!"},
-          {"speaker": "Audience", "line": "Incredible! This will change everything!"}
-        ]
-      }
-    ],
-  }
+    {
+      "branch": "Battle Tactics",
+      "skills": [
+        {
+          "name": "Ice Shield",
+          "effect": "Raise a barrier of ice to protect allies from enemy attacks",
+          "requirements": [
+            "Frost Armor"
+          ]
+        },
+        {
+          "name": "Blizzard Formation",
+          "effect": "Command allies to form a defensive circle amidst a blizzard",
+          "requirements": [
+            "Ice Shield"
+          ]
+        }
+      ]
+    },
+    {
+      "branch": "Destiny's Resolve",
+      "skills": [
+        {
+          "name": "Chilling Resolve",
+          "effect": "Boost Elise's resilience against frost-based attacks",
+          "requirements": [
+            "Frost Armor"
+          ]
+        },
+        {
+          "name": "Heroic Sacrifice",
+          "effect": "Sacrifice Elise's health to empower a devastating ice-based attack",
+          "requirements": [
+            "Chilling Resolve"
+          ]
+        }
+      ]
+    }
+  ],
+  "weapons": [
+    {
+      "id": "frostbite_axe",
+      "name": "Frostbite Axe",
+      "description": "A fearsome axe imbued with icy magic, capable of freezing foes with each strike.",
+      "damage": 12,
+      "requirements": []
+    },
+    {
+      "id": "snowstorm_bow",
+      "name": "Snowstorm Bow",
+      "description": "A bow crafted from enchanted ice, shooting arrows that summon blizzards upon impact.",
+      "damage": 10,
+      "requirements": []
+    },
+    {
+      "id": "glacial_spear",
+      "name": "Glacial Spear",
+      "description": "A spear tipped with razor-sharp ice shards, piercing through armor with ease.",
+      "damage": 8,
+      "requirements": []
+    }
+  ],
+  "cutscenes": [
+    {
+      "id": 1,
+      "title": "The Awakening",
+      "description": "Elise discovers her icy powers and embarks on a quest to save her frozen world from the malevolent Ice King, Vornir.",
+      "dialogue": [
+        {
+          "speaker": "Elise",
+          "line": "My destiny calls to me, a frozen path I must tread. The Ice King's grip must be broken."
+        },
+        {
+          "speaker": "Lucinda",
+          "line": "You are the hope of our world, Elise. Embrace your powers and journey forth with courage."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "The Frozen Alliance",
+      "description": "Elise forms an unlikely alliance with powerful allies, Lucinda the sorceress and Thalia the wandering merchant, to confront the Ice King's icy reign.",
+      "dialogue": [
+        {
+          "speaker": "Thalia",
+          "line": "Together, we shall defy the frost's grasp and bring warmth back to these lands."
+        },
+        {
+          "speaker": "Lucinda",
+          "line": "United, we can shatter the Ice King's throne and restore balance to our world."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "The Frozen Revelation",
+      "description": "Elise uncovers the truth behind Vornir's tyranny, revealing a twisted plot that threatens to plunge the world into eternal winter.",
+      "dialogue": [
+        {
+          "speaker": "Vornir",
+          "line": "You have no idea of the power you meddle with, Elise. Prepare for the icy embrace of a world frozen in time..."
+        },
+        {
+          "speaker": "Elise",
+          "line": "The truth may freeze my heart, but my resolve remains unyielding. The Ice King's reign ends now!"
+        }
+      ]
+    }
+  ]
 }

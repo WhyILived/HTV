@@ -95,13 +95,12 @@ FIELD RULES (for the model; do NOT include in output):
 
 Return ONLY a JSON object (no prose, no markdown) with EXACTLY these fields:
 
-{{
+{{"main_character": {{
   "id": "string",                          # short slug (lowercase, hyphens)
   "name": "string",                        # display name
   "type": "male" | "female" | "robot",     # one of the allowed values
   "visual_description": "string",          # appearance/clothing/accessories only
   "class": "string",                       # concise archetype
-  "race": "string",                        # setting-appropriate race
   "level": "integer",                      # 1–10
   "stats": {{                             # 35–45 total; each 1–10
     "strength": "integer",
@@ -110,15 +109,12 @@ Return ONLY a JSON object (no prose, no markdown) with EXACTLY these fields:
     "charisma": "integer",
     "luck": "integer"
   }},
-  "skills": [                              # 2–5 skills
-    {{ "name": "string", "description": "string", "level": "integer", "requirements": ["string"] }}
-  ],
-  "inventory": ["string"],                 # 3–8 items; include equipped pieces
-  "equipment": {{                         # must be subset of inventory
-    "weapon": "string",
-    "armor": "string",
-    "accessory": "string"
-  }}
+  "inventory": {{
+      "weapons": [],
+      "armor": [],
+      "accessories": []
+    }}
+}}
 }}
 """
 
@@ -152,22 +148,22 @@ FIELD RULES (for the model; do NOT include in output):
 - role: concise functional label (e.g., "quest-giver", "blacksmith", "antagonist-lieutenant").
 - type: one of ["male", "female", "robot"].
 - visual_description: 1–2 sentences; appearance/clothing/accessories only.
-- abilities: 1–3 concise, gameplay verbs or short move names (e.g., "patch-wounds", "freeze-spike", "smokescreen"); no backstory.
+- dialogue: 3 concise, to the point dialogues for the main character to interact with
 - mood: pick one from ["loyal", "grumpy", "mysterious", "optimistic", "stoic", "scheming", "witty", "anxious", "brave"].
 
 Return ONLY a JSON array (no prose/markdown) of 5–7 character objects, each with EXACTLY these fields:
 
-[
+{{ "characters": [
   {{
     "id": "string",                 // lowercase, hyphenated slug; unique
     "name": "string",               // display name
     "role": "string",               // functional role in gameplay
     "type": "male" | "female" | "robot",
     "visual_description": "string", // appearance/clothing/accessories only
-    "abilities": ["string"],        // 1–3 concise abilities
+    "dialogue": [],                 // list of strings of dialogue
     "mood": "string"                // choose from the allowed list
   }}
-]
+]}}
 """
 
         
@@ -190,27 +186,10 @@ async def generate_scenes(context, openai,prompt: str) -> List[Dict[str, Any]]:
         Return a JSON object with the following structure:
 
         "scenes": {{
-            "type": "array",
-            "items": {{
-                "type": "object",
-                "properties": {{
-                "id": {{ "type": "integer" }},
-                "title": {{ "type": "string" }},
-                "setting": {{ "type": "string" }},
-                "characters": {{ "type": "array", 
-                    "dialogue": {{  
-                            "type": "array",
-                            "items": {{
-                                "type": "object",
-                                "properties": {{
-                                "speaker": {{ "type": "string" }},
-                                "line": {{ "type": "string" }}
-                                    }}
-                                }}
-                            }}
-                        }},
-                    }}
-                }}
+            "id": "integer",
+            "title": "string",
+            "setting": "string",
+            "characters": []
             }},
             
         Here is more context on what has already been generated: {json.dumps(context, indent=2)}
@@ -234,26 +213,18 @@ async def generate_skill_tree(context, openai, prompt: str) -> List[Dict[str, An
 
         Return a JSON object with the following structure:
 
-        "skill_tree": {{
-            "type": "array",
-            "items": {{
-                "type": "object",
-                "properties": {{
-                "branch": {{ "type": "string" }},
-                "skills": {{
-                    "type": "array",
-                    "items": {{
-                    "type": "object",
-                    "properties": {{
-                        "name": {{ "type": "string" }},
-                        "effect": {{ "type": "string" }},
-                        "requirements": {{ "type": "array", "items": {{ "type": "string" }} }}
-                            }}
-                        }}
-                    }}
-                }}
+        "skill_tree": [
+        {{
+            "branch": "string",
+            "skills": [
+            {{
+                "name": "string",
+                "effect": "string",
+                "requirements": ["string", ...]
             }}
-        }},
+            ]
+        }}
+        ]
         
         Here is more context on what has already been generated: {json.dumps(context, indent=2)}
         """
@@ -276,19 +247,15 @@ async def generate_weapons(context, openai, prompt: str) -> Dict[str, Any]:
 
         Return a JSON object with the following structure:
 
-        "weapons": {{
-            "type": "array",
-            "items": {{
-                "type": "object",
-                "properties": {{
-                "id": {{ "type": "string" }},
-                "name": {{ "type": "string" }},
-                "description": {{ "type": "string" }},
-                "damage": {{ "type": "integer" }},
-                "requirements": {{ "type": "array", "items": {{ "type": "string" }} }}
-                }}
+        "weapons": [
+            {{
+                "id": "string",
+                "name": "string",
+                "description": "string",
+                "damage": number,
+                "requirements": ["string", ...]
             }}
-        }},
+        ]
         
         Here is more context on what has already been generated: {json.dumps(context, indent=2)}
         """
@@ -311,27 +278,19 @@ async def generate_cutscenes(context, openai, prompt: str) -> List[Dict[str, Any
 
         Return a JSON object with the following structure:
 
-        "cutscenes": {{
-            "type": "array",
-            "items": {{
-                "type": "object",
-                "properties": {{
-                "id": {{ "type": "integer" }},
-                "title": {{ "type": "string" }},
-                "description": {{ "type": "string" }},
-                "dialogue": {{
-                    "type": "array",
-                    "items": {{
-                    "type": "object",
-                    "properties": {{
-                        "speaker": {{ "type": "string" }},
-                        "line": {{ "type": "string" }}
-                    }}
-                    }}
+        "cutscenes": [
+                {{
+                    "id": number,
+                    "title": "string",
+                    "description": "string",
+                    "dialogue": [
+                        {{
+                            "speaker": "string",
+                            "line": "string"
+                        }}
+                    ]
                 }}
-                }}
-            }}
-            }}
+        ]
             
         Here is more context on what has already been generated: {json.dumps(context, indent=2)}
         """
@@ -371,13 +330,13 @@ async def generate_initial_storyline(prompt: str, ctx: Optional[Any] = None) -> 
     context.append(cutscenes)
 
     storyline = {
-        "game": game,
-        "main_character": main_character,
-        "characters": characters,
-        "scenes": scenes,
-        "skill_tree": skill_tree,
-        "weapons": weapons,
-        "cutscenes": cutscenes,
+        game,
+        main_character,
+        characters,
+        scenes,
+        skill_tree,
+        weapons,
+        cutscenes,
     }
 
     if ctx:
