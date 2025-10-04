@@ -91,7 +91,7 @@ class SpritesheetPipeline:
         }
     
     def _get_reference_path(self, ref_name: str) -> Path:
-        """Get the path to a reference image."""
+        """Get the path to a reference image - Windows compatible."""
         script_dir = Path(__file__).parent.parent.parent
         return script_dir / "schemas" / "excharacs" / ref_name
     
@@ -103,7 +103,7 @@ class SpritesheetPipeline:
             
             ref_path = None
             if reference_image:
-                # Check if it's already a full path (contains / or \)
+                # Windows compatible path checking
                 if "/" in reference_image or "\\" in reference_image:
                     ref_path = Path(reference_image)
                 else:

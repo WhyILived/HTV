@@ -9,6 +9,7 @@ from mcp.types import Tool, TextContent
 
 # Import our custom tools
 from .tools.spritesheet_pipeline import generate_character_sprites
+from .tools.storyline_pipeline import build_storyline_pipeline
 
 # Create MCP server
 server = Server("game-dev-tools")
@@ -86,7 +87,18 @@ async def list_tools() -> list[Tool]:
                 },
                 "required": ["name", "character_type", "custom_prompt"]
             }
-        )
+        ),
+        Tool(
+            name="generate_initial_storyline",
+            description="Generate an initial storyline for a game based on a given theme",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "prompt": {"type": "string", "description": "Prompt for the game"}
+                },
+                "required": ["prompt"]
+            }
+        ),
     ]
 
 @server.call_tool()
@@ -165,6 +177,14 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
             import traceback
             traceback.print_exc()
             return [TextContent(type="text", text=f"❌ Error generating character sprites: {str(e)}")]
+        
+    elif name == "generate_initial_storyline":
+        try:
+            prompt = arguments.get("prompt")
+            storyline = await build_storyline_pipeline(prompt)
+            return [TextContent(type="text", text=f"📖 Initial Storyline:\n{storyline}")]
+        except Exception as e:
+            return [TextContent(type="text", text=f"❌ Error generating storyline: {str(e)}")]
     
     raise ValueError(f"Unknown tool: {name}")
 
