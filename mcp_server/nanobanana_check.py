@@ -23,7 +23,7 @@ def generate(prompt: str = "Make a pixelated art character based on King Arthur.
     client = genai.Client(api_key=api_key)
     model = "gemini-2.5-flash-image-preview"
 
-    # Load reference image - use script directory as base
+    # Load reference image - Windows compatible path handling
     if reference_image_path is None:
         script_dir = Path(__file__).parent.parent  # Go up one level from mcp_server
         reference_image_path = script_dir / "schemas" / "excharacs" / "mp2.png"
@@ -60,7 +60,7 @@ def generate(prompt: str = "Make a pixelated art character based on King Arthur.
     )
 
     if output_name:
-        # If custom output name provided, use the directory from the output_name path
+        # Windows compatible path handling
         out_dir = Path(output_name).parent.resolve()
         out_dir.mkdir(parents=True, exist_ok=True)
     else:
