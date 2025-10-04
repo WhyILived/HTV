@@ -1,0 +1,132 @@
+{
+  "storyline": {
+    "game": {
+      "title": "Tesla: Sparks of Genius",
+      "genre": "Historical Action RPG",
+      "summary": "Step into the electrifying world of Nikola Tesla, a brilliant inventor battling the forces of ambition, rivalry, and obsession. Navigate through a world of invention, sabotage, and discovery in a story where science meets drama.",
+      "world_setting": "Late 19th to early 20th century America and Europe, with a semi-realistic, steampunk aesthetic."
+    },
+    "main_character": {
+      "id": "npc001",
+      "name": "Nikola Tesla",
+      "description": "A visionary inventor obsessed with harnessing the power of electricity for the benefit of humanity.",
+      "class": "Inventor",
+      "race": "Human",
+      "level": 10,
+      "stats": {
+        "strength": 4,
+        "dexterity": 7,
+        "intelligence": 10,
+        "charisma": 6,
+        "luck": 5
+      },
+      "skills": [
+        {
+          "name": "Electric Shock",
+          "description": "Unleash a controlled burst of electricity to stun enemies.",
+          "level": 1,
+          "requirements": []
+        },
+        {
+          "name": "Tesla Coil",
+          "description": "Summon a miniature Tesla Coil to attack multiple foes in the area.",
+          "level": 2,
+          "requirements": ["Electric Shock"]
+        },
+        {
+          "name": "Innovation Burst",
+          "description": "Instantly create a device that grants temporary buffs to allies.",
+          "level": 3,
+          "requirements": ["Tesla Coil"]
+        }
+      ],
+      "inventory": ["Notebook of Inventions", "Prototype Coil", "Mechanical Tools"],
+      "equipment": {
+        "weapon": "Portable Tesla Coil",
+        "armor": "Lab Coat",
+        "accessory": "Electrified Gloves"
+      }
+    },
+    "characters": [
+      {
+        "id": "npc002",
+        "name": "Thomas Edison",
+        "role": "Rival",
+        "description": "A successful and cunning inventor determined to dominate the electricity market, often clashing with Tesla's ideals.",
+        "abilities": ["Patented Schemes", "Financial Manipulation"],
+        "mood": "Ambitious"
+      },
+      {
+        "id": "npc003",
+        "name": "George Westinghouse",
+        "role": "Ally",
+        "description": "Tesla's investor and supporter, who believes in alternating current and helps him in the War of Currents.",
+        "abilities": ["Wealth Support", "Engineering Insight"],
+        "mood": "Loyal"
+      }
+    ],
+    "scenes": [
+      {
+        "id": 1,
+        "title": "The Arrival in New York",
+        "setting": "1884, New York City",
+        "characters": ["Nikola Tesla", "Thomas Edison"],
+        "events": [
+          {
+            "type": "dialogue",
+            "description": "Tesla meets Edison and pitches his AC ideas.",
+            "dialogue": [
+              {"speaker": "Nikola Tesla", "line": "I can provide power to every home without loss."},
+              {"speaker": "Thomas Edison", "line": "Impossible! Direct current is the only way forward."}
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "The War of Currents",
+        "setting": "Various cities in the US",
+        "characters": ["Nikola Tesla", "Thomas Edison", "George Westinghouse"],
+        "events": [
+          {
+            "type": "battle",
+            "description": "Tesla demonstrates the safety and efficiency of AC electricity against Edison's propaganda machines.",
+            "dialogue": []
+          }
+        ]
+      }
+    ],
+    "skill_tree": [
+      {
+        "branch": "Electric Mastery",
+        "skills": [
+          {"name": "Electric Shock", "effect": "Stuns enemy", "requirements": []},
+          {"name": "Tesla Coil", "effect": "AoE electricity attack", "requirements": ["Electric Shock"]},
+          {"name": "Lightning Surge", "effect": "Massive damage to machines", "requirements": ["Tesla Coil"]}
+        ]
+      },
+      {
+        "branch": "Inventor's Ingenuity",
+        "skills": [
+          {"name": "Prototype Creation", "effect": "Create temporary inventions", "requirements": []},
+          {"name": "Innovation Burst", "effect": "Buffs allies and debuffs enemies", "requirements": ["Prototype Creation"]}
+        ]
+      }
+    ],
+    "weapons": [
+      {"id": "wpn001", "name": "Portable Tesla Coil", "description": "A coil that generates powerful electric blasts.", "damage": 15, "requirements": ["Electric Mastery"]},
+      {"id": "wpn002", "name": "Sparking Rod", "description": "A rod that releases bursts of electricity.", "damage": 8, "requirements": []}
+    ],
+    "cutscenes": [
+      {
+        "id": 1,
+        "title": "The First Public Demonstration",
+        "description": "Tesla demonstrates the AC motor before an amazed audience.",
+        "dialogue": [
+          {"speaker": "Nikola Tesla", "line": "Behold, the future of electricity!"},
+          {"speaker": "Audience", "line": "Incredible! This will change everything!"}
+        ]
+      }
+    ],
+  }
+}
