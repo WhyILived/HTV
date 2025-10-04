@@ -511,7 +511,7 @@ async def generate_sprites_from_storyline(storyline_file: str = "storyline.json"
                 name=char['name'].replace(' ', '_').lower(),
                 character_type=char['character_type'],
                 custom_prompt=char['description'],
-                background_color="transparent",
+                background_color="#ea00ff",
                 size=64
             )
             
