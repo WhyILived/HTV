@@ -412,7 +412,7 @@ def run_game(storyline):
                         if nearest and nearest_dist**0.5 <= INTERACT_DISTANCE:
                             showing_interaction_menu = True
                             current_interaction_npc = nearest
-                else:
+                        else:
                             interaction_text = "No one nearby."
                             interaction_timer = 2.0
                 
