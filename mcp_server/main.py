@@ -76,15 +76,15 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="generate_character_sprites",
-            description="Generate complete character sprite set with animations (front, back, left, right, walk, sprint)",
+            description="Generate 4 character sprites: base, idle, walk1, walk2",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "name": {"type": "string", "description": "Character name (used for file naming)"},
-                    "gender": {"type": "string", "enum": ["male", "female"], "description": "Character gender"},
+                    "character_type": {"type": "string", "enum": ["male", "female", "robot"], "description": "Character type - determines reference image"},
                     "custom_prompt": {"type": "string", "description": "Custom description of the character ONLY - describe appearance, clothing, accessories, etc. Do NOT mention spritesheets, animations, or frames. Example: 'a female elf mage with blue robes and staff' - REQUIRED"}
                 },
-                "required": ["name", "gender", "custom_prompt"]
+                "required": ["name", "character_type", "custom_prompt"]
             }
         )
     ]
@@ -142,14 +142,28 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
     
     elif name == "generate_character_sprites":
         try:
+            print(f"🎨 Starting character generation for: {arguments.get('name')}")
+            print(f"📝 Character type: {arguments.get('character_type')}")
+            print(f"📝 Custom prompt: {arguments.get('custom_prompt')}")
+            
             result = await generate_character_sprites(
                 name=arguments.get("name"),
-                gender=arguments.get("gender"),
+                character_type=arguments.get("character_type"),
                 custom_prompt=arguments.get("custom_prompt")
             )
-            sprite_list = "\n".join([f"  - {name}: {filename}" for name, filename in result.items()])
-            return [TextContent(type="text", text=f"✅ Character sprites generated ({len(result)} sprites):\n{sprite_list}")]
+            
+            if result:
+                sprite_list = "\n".join([f"  - {name}: {filename}" for name, filename in result.items()])
+                print(f"✅ Successfully generated {len(result)} sprites")
+                return [TextContent(type="text", text=f"✅ Character sprites generated ({len(result)} sprites):\n{sprite_list}")]
+            else:
+                print("❌ No sprites were generated")
+                return [TextContent(type="text", text="❌ Failed to generate character sprites - no output produced")]
+                
         except Exception as e:
+            print(f"❌ Error in character generation: {str(e)}")
+            import traceback
+            traceback.print_exc()
             return [TextContent(type="text", text=f"❌ Error generating character sprites: {str(e)}")]
     
     raise ValueError(f"Unknown tool: {name}")
