@@ -145,7 +145,7 @@ class MCPOpenAIClient:
             messages = [
                 {
                     "role": "system",
-                    "content": "You are a helpful assistant with access to game development tools. When the user asks for multiple actions, break them down into individual tool calls. After each tool call, continue with the next action until all requested tasks are complete.\n\nIMPORTANT TOOL SELECTION:\n- Use 'generate_sprites_from_storyline' when user asks to generate sprites from storyline, create character sprites, or make sprites for characters\n- Use 'generate_initial_storyline' when user asks to create a storyline or story\n- Use 'list_directory' only when user specifically asks to list files or see directory contents\n- Use 'read_file' only when user specifically asks to read a file's contents"
+                    "content": "You are a helpful assistant with access to game development tools. Execute exactly ONE tool call per user request. Do not repeat tool calls. If the user asks for multiple things, execute them one at a time in sequence.\n\nTOOL USAGE:\n- 'generate_initial_storyline': Creates a storyline and saves it to storyline.json\n- 'generate_sprites_from_storyline': Generates character sprites from existing storyline.json\n- 'list_directory': Lists files in a directory\n- 'read_file': Reads file contents\n\nExecute only the tool the user requests. Do not call the same tool multiple times."
                 },
                 {
                     "role": "user",
@@ -155,6 +155,7 @@ class MCPOpenAIClient:
             
             max_iterations = 10  # Prevent infinite loops
             iteration = 0
+            last_tool_called = None
             
             while iteration < max_iterations:
                 iteration += 1
@@ -182,6 +183,11 @@ class MCPOpenAIClient:
                         tool_name = tool_call.function.name
                         tool_args = json.loads(tool_call.function.arguments)
                         
+                        # Prevent calling the same tool multiple times in a row
+                        if tool_name == last_tool_called:
+                            print(f"⚠️ Skipping duplicate {tool_name} call")
+                            continue
+                        
                         print(f"⚙️ Executing {tool_name}...")
                         
                         # Call the MCP tool
@@ -194,6 +200,7 @@ class MCPOpenAIClient:
                                 "content": str(result)
                             })
                             print(f"✅ {tool_name} completed")
+                            last_tool_called = tool_name
                     
                     # Add tool results to conversation
                     messages.extend(tool_results)

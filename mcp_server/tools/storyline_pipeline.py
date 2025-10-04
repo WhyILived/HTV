@@ -158,15 +158,15 @@ FIELD RULES (for the model; do NOT include in output):
 Return ONLY a JSON array (no prose/markdown) of 5–7 character objects, each with EXACTLY these fields:
 
 [
-  {
-    "id": string,                 // lowercase, hyphenated slug; unique
-    "name": string,               // display name
-    "role": string,               // functional role in gameplay
+  {{
+    "id": "string",                 // lowercase, hyphenated slug; unique
+    "name": "string",               // display name
+    "role": "string",               // functional role in gameplay
     "type": "male" | "female" | "robot",
-    "visual_description": string, // appearance/clothing/accessories only
-    "abilities": [string],        // 1–3 concise abilities
-    "mood": string                // choose from the allowed list
-  }
+    "visual_description": "string", // appearance/clothing/accessories only
+    "abilities": ["string"],        // 1–3 concise abilities
+    "mood": "string"                // choose from the allowed list
+  }}
 ]
 """
 
@@ -399,7 +399,4 @@ async def build_storyline_pipeline(prompt: str, ctx: Optional[Any] = None, outpu
     if ctx:
         ctx.log("Storyline pipeline complete.")
 
-    return {
-        "storyline": storyline,
-        "json_string": json.dumps(storyline, indent=2)
-    }
+    return storyline

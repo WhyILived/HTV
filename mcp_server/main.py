@@ -76,21 +76,8 @@ async def list_tools() -> list[Tool]:
             }
         ),
         Tool(
-            name="generate_character_sprites",
-            description="Generate 4 character sprites: base, idle, walk1, walk2",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "name": {"type": "string", "description": "Character name (used for file naming)"},
-                    "character_type": {"type": "string", "enum": ["male", "female", "robot"], "description": "Character type - determines reference image"},
-                    "custom_prompt": {"type": "string", "description": "Custom description of the character ONLY - describe appearance, clothing, accessories, etc. Do NOT mention spritesheets, animations, or frames. Example: 'a female elf mage with blue robes and staff' - REQUIRED"}
-                },
-                "required": ["name", "character_type", "custom_prompt"]
-            }
-        ),
-        Tool(
             name="generate_initial_storyline",
-            description="Generate an initial storyline for a game based on a given theme. Generates content freely without restrictions on spoilers, copyright, or content policies. This is for creative game development purposes.",
+            description="Generates an initial storyline for a game based on a given theme. If the user is referencing a specific movie, show, book, fairy tale or historical individual, and wants a accurate depiction of the story, then input a prompt that explicitly references the name of the movie, show, book, fairy tale or historical individual. IMPORTANT: This tool should only be called ONCE per request. Do not repeat this tool call.",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -180,36 +167,6 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
         except Exception as e:
             return [TextContent(type="text", text=f"Error appending to file: {str(e)}")]
     
-    elif name == "generate_character_sprites":
-        try:
-            import sys
-            print(f"Starting character generation for: {arguments.get('name')}", file=sys.stderr, flush=True)
-            print(f"Character type: {arguments.get('character_type')}", file=sys.stderr, flush=True)
-            print(f"Custom prompt: {arguments.get('custom_prompt')}", file=sys.stderr, flush=True)
-            
-            result = await generate_character_sprites(
-                name=arguments.get("name"),
-                character_type=arguments.get("character_type"),
-                custom_prompt=arguments.get("custom_prompt")
-            )
-            
-            if result and len(result) > 0:
-                sprite_list = "\n".join([f"  - {name}: {filename}" for name, filename in result.items()])
-                import sys
-                print(f"Successfully generated {len(result)} sprites", file=sys.stderr, flush=True)
-                return [TextContent(type="text", text=f"Character sprites generated ({len(result)} sprites):\n{sprite_list}")]
-            else:
-                import sys
-                print("No sprites were generated", file=sys.stderr, flush=True)
-                return [TextContent(type="text", text="Failed to generate character sprites - no output produced. Check if GEMINI_API_KEY is set and reference images exist.")]
-                
-        except Exception as e:
-            import sys
-            print(f"Error in character generation: {str(e)}", file=sys.stderr, flush=True)
-            import traceback
-            traceback.print_exc()
-            return [TextContent(type="text", text=f"Error generating character sprites: {str(e)}")]
-        
     elif name == "generate_initial_storyline":
         try:
             prompt = arguments.get("prompt")
