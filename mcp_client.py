@@ -24,7 +24,7 @@ class MCPOpenAIClient:
         try:
             # Start MCP server process
             self.process = subprocess.Popen(
-                ["python", "-m", "mcp_server.main", "stdio"],
+                [sys.executable, "-m", "mcp_server.main", "stdio"],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
