@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 # Load environment variables
-load_dotenv()
+load_dotenv(override=True)
 
 class MCPOpenAIClient:
     def __init__(self, model="gpt-4o"):
@@ -22,13 +22,15 @@ class MCPOpenAIClient:
     async def connect_to_mcp_server(self):
         """Connect to the MCP server and get available tools."""
         try:
-            # Start MCP server process
+            python_exe = sys.executable
             self.process = subprocess.Popen(
-                ["python", "-m", "mcp_server.main", "stdio"],
+                [python_exe, "-m", "mcp_server.main", "stdio"],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True
+                text=True,
+                encoding="utf-8",
+                bufsize=1
             )
             
             # Initialize the session
@@ -189,6 +191,10 @@ class MCPOpenAIClient:
                                 "content": str(result)
                             })
                             print(f"✅ {tool_name} completed")
+                            if (tool_name == "generate_initial_storyline"):
+                                print("🛑 Storyline generated, ending further tool calls.")
+                                print(result)
+                                print("HMMM")
                     
                     # Add tool results to conversation
                     messages.extend(tool_results)

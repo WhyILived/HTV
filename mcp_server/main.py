@@ -9,6 +9,7 @@ from mcp.types import Tool, TextContent
 
 # Import our custom tools
 from .tools.spritesheet_pipeline import generate_character_sprites
+from .tools.storyline_pipeline import build_storyline_pipeline
 
 # Create MCP server
 server = Server("game-dev-tools")
@@ -98,61 +99,6 @@ async def list_tools() -> list[Tool]:
                 "required": ["prompt"]
             }
         ),
-        Tool(
-            name="generate_overview",
-            description="Generate a high-level game overview including title, genre, and summary",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "prompt": {"type": "string", "description": "Prompt for the game"}
-                },
-                "required": ["prompt"]
-            }
-        ),
-        Tool(
-            name="generate_characters",
-            description="Generate a list of characters for the game, including roles and abilities",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "prompt": {"type": "string", "description": "Prompt for the game"}
-                },
-                "required": ["prompt"]
-            }
-        ),
-        Tool(
-            name="generate_scenes",
-            description="Generate story scenes including settings, events, and narrative flow",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "prompt": {"type": "string", "description": "Prompt for the game"}
-                },
-                "required": ["prompt"]
-            }
-        ),
-        Tool(
-            name="generate_skill_tree",
-            description="Generate a skill tree with branches, skills, and requirements",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "prompt": {"type": "string", "description": "Prompt for the game"}
-                },
-                "required": ["prompt"]
-            }
-        ),
-        Tool(
-            name="generate_cutscenes",
-            description="Generate cinematic cutscenes with dialogue and descriptions",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "prompt": {"type": "string", "description": "Prompt for the game"}
-                },
-                "required": ["prompt"]
-            }
-        )
     ]
 
 @server.call_tool()
@@ -221,96 +167,10 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
     elif name == "generate_initial_storyline":
         try:
             prompt = arguments.get("prompt")
-            storyline = f"Once upon a time in a world inspired by '{prompt}', an epic adventure began..."
+            storyline = await build_storyline_pipeline(prompt)
             return [TextContent(type="text", text=f"📖 Initial Storyline:\n{storyline}")]
         except Exception as e:
             return [TextContent(type="text", text=f"❌ Error generating storyline: {str(e)}")]
-    
-    elif name == "generate_overview":
-        try:
-            prompt = arguments.get("prompt")
-            overview = {
-                "title": f"{prompt} RPG Adventure",
-                "genre": "Fantasy RPG",
-                "summary": f"A role-playing game inspired by '{prompt}' with quests, battles, and magic."
-            }
-            return [TextContent(type="text", text=f"📘 Game Overview:\n{json.dumps(overview, indent=2)}")]
-        except Exception as e:
-            return [TextContent(type="text", text=f"❌ Error generating overview: {str(e)}")]
-    
-    elif name == "generate_characters":
-        try:
-            prompt = arguments.get("prompt")
-            characters = [
-                {"name": "Elsa", "role": "Protagonist", "abilities": ["Ice Shard", "Frozen Barrier"]},
-                {"name": "Anna", "role": "Companion", "abilities": ["Inspiration", "Swordplay"]},
-                {"name": "The Duke", "role": "Antagonist", "abilities": ["Schemes", "Soldiers"]}
-            ]
-            return [TextContent(type="text", text=f"🧑‍🤝‍🧑 Characters:\n{json.dumps(characters, indent=2)}")]
-        except Exception as e:
-            return [TextContent(type="text", text=f"❌ Error generating characters: {str(e)}")]
-    
-    elif name == "generate_scenes":
-        try:
-            prompt = arguments.get("prompt")
-            scenes = [
-                {
-                    "id": 1,
-                    "title": "Attack on Arendelle",
-                    "setting": "Snowy kingdom under siege",
-                    "events": ["Elsa defends the gates", "Anna rallies the people"]
-                },
-                {
-                    "id": 2,
-                    "title": "Journey into the Mountains",
-                    "setting": "Frozen wilderness",
-                    "events": ["Elsa encounters magical spirits", "A vision of the Ice Queen appears"]
-                }
-            ]
-            return [TextContent(type="text", text=f"🎬 Scenes:\n{json.dumps(scenes, indent=2)}")]
-        except Exception as e:
-            return [TextContent(type="text", text=f"❌ Error generating scenes: {str(e)}")]
-    
-    elif name == "generate_skill_tree":
-        try:
-            prompt = arguments.get("prompt")
-            skill_tree = [
-                {
-                    "branch": "Frost Magic",
-                    "skills": [
-                        {"name": "Ice Shard", "effect": "Launches an icy projectile"},
-                        {"name": "Frozen Barrier", "effect": "Creates a defensive wall of ice"}
-                    ]
-                },
-                {
-                    "branch": "Leadership",
-                    "skills": [
-                        {"name": "Inspire Allies", "effect": "Boosts morale and attack power"},
-                        {"name": "Royal Command", "effect": "Orders NPC allies to perform special actions"}
-                    ]
-                }
-            ]
-            return [TextContent(type="text", text=f"🌟 Skill Tree:\n{json.dumps(skill_tree, indent=2)}")]
-        except Exception as e:
-            return [TextContent(type="text", text=f"❌ Error generating skill tree: {str(e)}")]
-    
-    elif name == "generate_cutscenes":
-        try:
-            prompt = arguments.get("prompt")
-            cutscenes = [
-                {
-                    "id": 1,
-                    "title": "Elsa’s Vision",
-                    "description": "Elsa sees an ancient Ice Queen warning her of destiny.",
-                    "dialogue": [
-                        {"speaker": "Ice Queen", "line": "Your powers are just the beginning..."},
-                        {"speaker": "Elsa", "line": "What must I do?"}
-                    ]
-                }
-            ]
-            return [TextContent(type="text", text=f"🎥 Cutscenes:\n{json.dumps(cutscenes, indent=2)}")]
-        except Exception as e:
-            return [TextContent(type="text", text=f"❌ Error generating cutscenes: {str(e)}")]
     
     raise ValueError(f"Unknown tool: {name}")
 

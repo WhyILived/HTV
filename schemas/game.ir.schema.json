@@ -161,50 +161,6 @@
             }
           }
         },
-        "armor": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": { "type": "string" },
-              "name": { "type": "string" },
-              "description": { "type": "string" },
-              "defense": { "type": "integer" },
-              "requirements": { "type": "array", "items": { "type": "string" } }
-            }
-          }
-        },
-        "consumables": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": { "type": "string" },
-              "name": { "type": "string" },
-              "description": { "type": "string" },
-              "effects": {
-                "type": "object",
-                "properties": {
-                  "hp_restore": { "type": "integer" },
-                  "mana_restore": { "type": "integer" }
-                }
-              },
-              "requirements": { "type": "array", "items": { "type": "string" } }
-            }
-          }
-        },
-        "key_items": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": { "type": "string" },
-              "name": { "type": "string" },
-              "description": { "type": "string" },
-              "effect": { "type": "string" }
-            }
-          }
-        },
         "cutscenes": {
           "type": "array",
           "items": {
@@ -221,24 +177,6 @@
                     "speaker": { "type": "string" },
                     "line": { "type": "string" }
                   }
-                }
-              }
-            }
-          }
-        },
-        "world_map": {
-          "type": "object",
-          "properties": {
-            "regions": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "id": { "type": "string" },
-                  "name": { "type": "string" },
-                  "description": { "type": "string" },
-                  "connections": { "type": "array", "items": { "type": "string" } },
-                  "danger_level": { "type": "integer" }
                 }
               }
             }
