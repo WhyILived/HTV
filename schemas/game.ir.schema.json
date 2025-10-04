@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "game.ir.schema.json",
+  "title": "Game Spec IR",
+  "type": "object",
+  "required": ["version", "meta", "story", "mechanics", "moves", "scenes", "assets", "dialogue", "validators"],
+  "properties": {
+    "version": { "type": "string" },
+    "irSchema": { "type": "string" },
+    "meta": {
+      "type": "object",
+      "required": ["title", "seed", "styleGuide"],
+      "properties": {
+        "title": { "type": "string" },
+        "seed": { "type": "integer" },
+        "styleGuide": {
+          "type": "object",
+          "required": ["palette", "tile", "fps"],
+          "properties": {
+            "palette": { "type": "string" },
+            "tile": {
+              "type": "object",
+              "required": ["size"],
+              "properties": { "size": { "type": "integer", "enum": [16, 32] } }
+            },
+            "fps": { "type": "integer", "const": 60 }
+          }
+        }
+      }
+    },
+    "story": {
+      "type": "object",
+      "properties": {
+        "world": { "type": ["string", "null"] },
+        "arcs": { "type": "array" },
+        "characters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "name", "appearance", "archetype"],
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "appearance": { "type": "string" },
+              "archetype": { "type": "string" }
+            }
+          }
+        },
+        "decisions": { "type": "array" },
+        "scenes": { "type": "array" }
+      }
+    },
+    "mechanics": { "type": "object" },
+    "moves": { "type": "array" },
+    "scenes": { "type": "array" },
+    "assets": { "type": "object" },
+    "dialogue": { "type": "object" },
+    "validators": {
+      "type": "object",
+      "properties": {
+        "globalConstraints": {
+          "type": "object",
+          "properties": {
+            "tileSize": { "type": "integer", "enum": [16, 32] },
+            "paletteMaxColors": { "type": "integer", "maximum": 16 },
+            "fps": { "type": "integer", "const": 60 },
+            "timestepMs": { "type": "integer", "const": 16 },
+            "anchorFeetY": { "type": "number" },
+            "hitboxGrid": { "type": "number", "enum": [0.5, 1] },
+            "maxFramesPerClip": { "type": "integer", "maximum": 8 }
+          },
+          "required": ["tileSize", "paletteMaxColors", "fps", "timestepMs", "anchorFeetY", "hitboxGrid", "maxFramesPerClip"]
+        }
+      },
+      "required": ["globalConstraints"]
+    },
+    "provenance": { "type": ["object", "null"] }
+  }
+}
