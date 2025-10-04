@@ -1,191 +1,210 @@
 {
   "game": {
     "game": {
-      "type": "object",
-      "properties": {
-        "title": "Frostbound",
-        "genre": "Adventure RPG",
-        "summary": "Embark on a wintry journey with Elise, a young woman possessing rare frostcraft magic, as she navigates political pressures and magical imbalances in a unique winter-bound realm. Uncover hidden secrets, balance duty with empathy, and confront an ancient storm-spirit that mirrors Elise's inner struggle.",
-        "world_setting": "The realm of Glaciala is a majestic winter wonderland with crystalized forests, towering ice-capped mountains, and ancient ruins cloaked in snow. Its people have a deep reverence for winter magic and folklore, drawing inspiration from mythical creatures and icy landscapes that shape their culture and traditions."
-      }
+      "title": "Frozen: Journey of Ice and Snow",
+      "genre": "Adventure",
+      "summary": "Embark on an epic journey through the icy landscapes of Arendelle as you help Anna find her sister Elsa and save the kingdom from eternal winter. Solve puzzles, overcome challenges, and discover the true power of sisterly love.",
+      "world_setting": "Welcome to the enchanting kingdom of Arendelle, where snow-capped mountains and frozen fjords set the stage for a magical adventure. Explore iconic locations such as Arendelle Castle, North Mountain, Oaken\u2019s Trading Post, Elsa\u2019s Ice Palace, and Troll Valley, all rendered in charming pixel art. Immerse yourself in a heartwarming tale of self-acceptance, family bonds, and the triumph of love over fear."
     }
   },
   "main_character": {
-    "main_character": {
-      "id": "elise",
-      "name": "Elise",
-      "description": "A young woman born with rare frostcraft\u2014magic tied to snow, ice, and wind. As she grapples with her powers and the political pressures of her realm, Elise must navigate a complex inner journey of self-acceptance and understanding.",
-      "class": "Frost Mage",
-      "race": "Human",
-      "level": 1,
-      "stats": {
-        "strength": 5,
-        "dexterity": 7,
-        "intelligence": 9,
-        "charisma": 6,
-        "luck": 4
+    "id": "anna-frostseeker",
+    "name": "Anna Frostseeker",
+    "type": "female",
+    "visual_description": "A spirited young woman with fiery red hair, dressed in a practical winter outfit adorned with a snowflake pendant.",
+    "class": "Adventurer",
+    "race": "human",
+    "level": 5,
+    "stats": {
+      "strength": 7,
+      "dexterity": 8,
+      "intelligence": 6,
+      "charisma": 7,
+      "luck": 7
+    },
+    "skills": [
+      {
+        "name": "Ice Climber",
+        "description": "Allows Anna to scale icy cliffs and reach hidden areas. Level 2.",
+        "level": 2,
+        "requirements": [
+          "strength:5",
+          "dexterity:6"
+        ]
       },
-      "skills": [
-        {
-          "name": "Icy Veins",
-          "description": "Enhances control over frostcraft abilities",
-          "level": 1,
-          "requirements": []
-        },
-        {
-          "name": "Blizzard's Embrace",
-          "description": "Summons a protective blizzard to shield Elise from harm",
-          "level": 1,
-          "requirements": []
-        }
-      ],
-      "inventory": [],
-      "equipment": {
-        "weapon": "Froststaff",
-        "armor": "Glacial Robes",
-        "accessory": "Snowflake Amulet"
+      {
+        "name": "Blizzard Strike",
+        "description": "Unleashes a flurry of icy attacks on enemies. Level 3.",
+        "level": 3,
+        "requirements": [
+          "intelligence:4",
+          "luck:5"
+        ]
+      },
+      {
+        "name": "Heart of Courage",
+        "description": "Boosts Anna's allies' morale, granting them enhanced combat abilities. Level 4.",
+        "level": 4,
+        "requirements": [
+          "charisma:6"
+        ]
       }
+    ],
+    "inventory": [
+      "Snowflake Pendant",
+      "Icicle Dagger",
+      "Winter Cloak",
+      "Healing Potion"
+    ],
+    "equipment": {
+      "weapon": "Icicle Dagger",
+      "armor": "Winter Cloak",
+      "accessory": "Snowflake Pendant"
     }
   },
-  "characters": {
-    "characters": {
-      "type": "array",
-      "items": [
-        {
-          "id": "mentor",
-          "name": "Elder Frostweaver",
-          "role": "Mentor Figure",
-          "description": "A wise and ancient figure skilled in the ways of winter magic. The Elder Frostweaver guides and trains Elise in mastering her frostcraft abilities, imparting knowledge passed down through generations.",
-          "abilities": [
-            "Winter's Wisdom",
-            "Frostweaving Mastery"
-          ],
-          "mood": "Serene"
-        },
-        {
-          "id": "councilor",
-          "name": "Councilor Astra",
-          "role": "Skeptical Councilor",
-          "description": "A cautious and pragmatic councilor who questions Elise's abilities and decisions, wary of the potential consequences of her powers. Councilor Astra provides a contrasting viewpoint to Elise's journey.",
-          "abilities": [
-            "Political Acumen",
-            "Skeptic's Insight"
-          ],
-          "mood": "Distrustful"
-        },
-        {
-          "id": "wanderer",
-          "name": "Frostbound Wanderer",
-          "role": "Keeper of Winter Lore",
-          "description": "A nomad well-versed in the ancient legends and myths of the winter realm. The Frostbound Wanderer shares tales of lost magic, forgotten deities, and elemental spirits, offering Elise glimpses into her realm's rich history.",
-          "abilities": [
-            "Storyteller's Gift",
-            "Icebound Knowledge"
-          ],
-          "mood": "Mysterious"
-        }
-      ]
+  "characters": [
+    {
+      "id": "krista-iceweaver",
+      "name": "Krista Iceweaver",
+      "role": "mentor",
+      "type": "female",
+      "visual_description": "Wise elderly woman in a cloak adorned with snowflake patterns.",
+      "abilities": [
+        "Frost Barrier",
+        "Ice Shard",
+        "Snowfall"
+      ],
+      "mood": "mysterious"
+    },
+    {
+      "id": "loki-snowsmith",
+      "name": "Loki Snowsmith",
+      "role": "blacksmith",
+      "type": "male",
+      "visual_description": "Burly man with a snowflake-shaped hammer at his side.",
+      "abilities": [
+        "Forge Frost",
+        "Ice Hammer",
+        "Chill Blast"
+      ],
+      "mood": "grumpy"
+    },
+    {
+      "id": "freyja-snowsong",
+      "name": "Freyja Snowsong",
+      "role": "healer",
+      "type": "female",
+      "visual_description": "Gentle woman in a snow-white robe, carrying a staff topped with a crystal.",
+      "abilities": [
+        "Healing Frost",
+        "Revitalize",
+        "Ice Protection"
+      ],
+      "mood": "optimistic"
+    },
+    {
+      "id": "magnar-icewalker",
+      "name": "Magnar Icewalker",
+      "role": "guardian",
+      "type": "male",
+      "visual_description": "Tall man with a rugged fur cloak and a sturdy ice spear.",
+      "abilities": [
+        "Glacial Shield",
+        "Avalanche Strike",
+        "Ice Fortress"
+      ],
+      "mood": "brave"
+    },
+    {
+      "id": "ingrid-frostbloom",
+      "name": "Ingrid Frostbloom",
+      "role": "explorer",
+      "type": "female",
+      "visual_description": "Adventurous woman with a fur-trimmed explorer outfit and a compass in hand.",
+      "abilities": [
+        "Ice Climb",
+        "Blizzard Trail",
+        "Frost Arrow"
+      ],
+      "mood": "stoic"
     }
-  },
+  ],
   "scenes": {
     "scenes": {
       "type": "array",
       "items": [
         {
           "id": 1,
-          "title": "Frozen Awakening",
-          "setting": "The frozen city of Frosthold stands as a testament to Glaciala's ancient history, with its towering ice spires and shimmering snow-covered streets.",
+          "title": "The Trolls' Healing",
+          "setting": "Troll Valley",
           "characters": [
             {
-              "name": "Elise",
-              "dialogue": [
-                {
-                  "speaker": "Elise",
-                  "line": "The chill in the air whispers to me, urging me to embrace my frostcraft."
-                }
-              ]
+              "speaker": "Grand Pabbie",
+              "line": "Long ago, Princess Elsa injured her sister Anna with her magical ice powers. I healed Anna and erased her memories of Elsa's abilities to keep her safe. Elsa must learn to control her powers."
             },
             {
-              "name": "Younger Sister",
-              "dialogue": [
-                {
-                  "speaker": "Younger Sister",
-                  "line": "Elise, what's happening? Your magic is getting out of control!"
-                }
-              ]
+              "speaker": "Grand Pabbie",
+              "line": "Fear will be Elsa's enemy. Love will be her salvation. Remember, a frozen heart can only be thawed by an act of true love."
             }
           ]
         },
         {
           "id": 2,
-          "title": "Trial of Ice and Fire",
-          "setting": "The Frostpeak Mountains loom large in the distance, their jagged peaks piercing the wintry sky.",
+          "title": "Elsa's Coronation",
+          "setting": "Arendelle Castle",
           "characters": [
             {
-              "name": "Mentor",
-              "dialogue": [
-                {
-                  "speaker": "Elder Frostweaver",
-                  "line": "To master your frostcraft, you must learn to balance its icy power with the warmth of your spirit."
-                }
-              ]
+              "speaker": "Elsa",
+              "line": "I must conceal my powers. The gloves will help me. It's time to take my place as Queen of Arendelle."
             },
             {
-              "name": "Councilor",
-              "dialogue": [
-                {
-                  "speaker": "Councilor Astra",
-                  "line": "Do not let your abilities blind you to the consequences, Elise. The kingdom's safety must come first."
-                }
-              ]
+              "speaker": "Anna",
+              "line": "I'm so excited for Elsa's coronation! This will be great!"
             }
           ]
         },
         {
           "id": 3,
-          "title": "Whispers of the Frostbound",
-          "setting": "The Whispering Woods are alive with the soft murmurs of ancient spirits, their icy breath touching the air with frost.",
+          "title": "Arendelle Plunged Into Eternal Winter",
+          "setting": "Arendelle Castle",
           "characters": [
             {
-              "name": "Wanderer",
-              "dialogue": [
-                {
-                  "speaker": "Frostbound Wanderer",
-                  "line": "The ice remembers, Elise. Listen to its tales and heed its warnings."
-                }
-              ]
+              "speaker": "Elsa",
+              "line": "No! I can't control it. The kingdom is frozen because of me. I have to leave."
+            },
+            {
+              "speaker": "Anna",
+              "line": "Elsa, please come back! We can fix this together!"
             }
           ]
         },
         {
           "id": 4,
-          "title": "Shadows of the Storm-Spirit",
-          "setting": "A colossal storm gathers on the horizon, its dark clouds swirling with malevolent intent as it approaches.",
+          "title": "Journey to Find Elsa",
+          "setting": "Oaken's Trading Post",
           "characters": [
             {
-              "name": "Elise",
-              "dialogue": [
-                {
-                  "speaker": "Elise",
-                  "line": "I must confront the storm spirit within myself before it consumes everything I hold dear."
-                }
-              ]
+              "speaker": "Kristoff",
+              "line": "I can take you to the North Mountain. It's dangerous, but I know the way."
+            },
+            {
+              "speaker": "Anna",
+              "line": "I have to find Elsa and bring her back. I won't give up."
             }
           ]
         },
         {
           "id": 5,
-          "title": "Thawing Hearts",
-          "setting": "The Glacial Palace stands as a beacon of hope in the winter realm, its crystalline towers reflecting the light of a new dawn.",
+          "title": "The Thawing of Arendelle",
+          "setting": "Frozen Fjord",
           "characters": [
             {
-              "name": "Elise",
-              "dialogue": [
-                {
-                  "speaker": "Elise",
-                  "line": "I have found my place in this wintry world, embracing both my frostcraft and my heart's warmth."
-                }
-              ]
+              "speaker": "Olaf",
+              "line": "Some people are worth melting for."
+            },
+            {
+              "speaker": "Anna",
+              "line": "Love will thaw a frozen heart. Elsa, I love you."
             }
           ]
         }
@@ -193,93 +212,108 @@
     }
   },
   "skill_tree": {
-    "skill_tree": {
-      "type": "array",
-      "items": [
-        {
-          "branch": "Frostcraft Mastery",
-          "skills": [
-            {
-              "name": "Snowfall Surge",
-              "effect": "Unleashes a torrent of snow and ice to freeze enemies in place",
-              "requirements": [
-                "Icy Veins"
-              ]
-            },
-            {
-              "name": "Winter's Shield",
-              "effect": "Summons a protective barrier of ice to deflect incoming attacks",
-              "requirements": [
-                "Blizzard's Embrace"
-              ]
-            },
-            {
-              "name": "Frostbound Fury",
-              "effect": "Channels raw frostcraft energy into devastating icy blasts",
-              "requirements": [
-                "Snowfall Surge"
-              ]
-            }
-          ]
-        },
-        {
-          "branch": "Empathy Path",
-          "skills": [
-            {
-              "name": "Heart's Warmth",
-              "effect": "Empowers allies with a comforting warmth, boosting their morale",
-              "requirements": []
-            },
-            {
-              "name": "Compassionate Resolve",
-              "effect": "Dispels negative emotions and debuffs from allies",
-              "requirements": [
-                "Heart's Warmth"
-              ]
-            },
-            {
-              "name": "Harmony's Embrace",
-              "effect": "Fuses frostcraft with empathy to heal and strengthen allies",
-              "requirements": [
-                "Compassionate Resolve"
-              ]
-            }
-          ]
-        }
-      ]
-    }
+    "skill_tree": [
+      {
+        "branch": "Ice Magic",
+        "skills": [
+          {
+            "name": "Frost Mastery",
+            "effect": "Increases Elsa's control over ice magic, allowing for more intricate and powerful spells.",
+            "requirements": [
+              "Intelligence: 8",
+              "Willpower: 7"
+            ]
+          },
+          {
+            "name": "Glacial Shield",
+            "effect": "Creates a protective barrier of ice around Elsa, reducing incoming damage.",
+            "requirements": [
+              "Concentration: 6"
+            ]
+          },
+          {
+            "name": "Blizzard Avalanche",
+            "effect": "Summons a fierce blizzard with icy projectiles that damage and slow enemies.",
+            "requirements": [
+              "Dexterity: 7",
+              "Charisma: 6"
+            ]
+          }
+        ]
+      },
+      {
+        "branch": "Sisterly Bond",
+        "skills": [
+          {
+            "name": "True Love's Sacrifice",
+            "effect": "Strengthens Elsa and Anna's bond, granting bonuses to teamwork and support abilities.",
+            "requirements": [
+              "Charisma: 8",
+              "Empathy: 7"
+            ]
+          },
+          {
+            "name": "Encouraging Aura",
+            "effect": "Radiates an aura of positivity that boosts morale and resilience of nearby allies.",
+            "requirements": [
+              "Charisma: 6",
+              "Luck: 7"
+            ]
+          },
+          {
+            "name": "Frozen Heart Defiance",
+            "effect": "Allows Elsa and Anna to resist negative effects and maintain their resolve in the face of adversity.",
+            "requirements": [
+              "Willpower: 8"
+            ]
+          }
+        ]
+      }
+    ]
   },
   "weapons": {
     "weapons": {
       "type": "array",
       "items": [
         {
-          "id": "ice_blade",
+          "id": "frostblade",
           "name": "Frostblade",
-          "description": "A blade forged from enchanted ice crystals, capable of freezing enemies upon contact.",
-          "damage": 8,
-          "requirements": []
+          "description": "A magical sword infused with ice powers, capable of freezing enemies on contact.",
+          "damage": 20,
+          "requirements": [
+            "Strength: 10",
+            "Intelligence: 8"
+          ]
         },
         {
-          "id": "wind_bow",
-          "name": "Galebow",
-          "description": "A bow crafted from winter winds, shooting arrows that summon icy gusts to slow and damage foes.",
-          "damage": 6,
-          "requirements": []
+          "id": "glacierbow",
+          "name": "Glacier Bow",
+          "description": "A bow crafted from enchanted ice crystals, shooting frost arrows that slow down targets.",
+          "damage": 18,
+          "requirements": [
+            "Dexterity: 12",
+            "Charisma: 6"
+          ]
         },
         {
-          "id": "snowflurry_staff",
-          "name": "Snowflurry Staff",
-          "description": "A staff adorned with swirling snowflakes, unleashing blizzards that freeze and damage multiple enemies.",
+          "id": "blizzardstaff",
+          "name": "Blizzard Staff",
+          "description": "A staff channeling the power of snowstorms, unleashing freezing spells to control the battlefield.",
+          "damage": 25,
+          "requirements": [
+            "Intelligence: 15",
+            "Willpower: 10"
+          ]
+        },
+        {
+          "id": "icepick",
+          "name": "Ice Pick",
+          "description": "A versatile tool for climbing icy surfaces or breaking through frozen obstacles.",
           "damage": 10,
-          "requirements": []
-        },
-        {
-          "id": "blizzard_axe",
-          "name": "Blizzardcleaver",
-          "description": "An axe infused with the power of raging blizzards, cleaving through enemies with icy ferocity.",
-          "damage": 12,
-          "requirements": []
+          "requirements": [
+            "Dexterity: 8",
+            "Luck: 6"
+          ]
         }
       ]
     }
@@ -290,46 +324,46 @@
       "items": [
         {
           "id": 1,
-          "title": "Echoes of Frostfall",
-          "description": "As Elise explores the ancient ruins of Frostfall, she uncovers whispers of a forgotten winter deity, hinting at a deeper connection to her frostcraft magic.",
+          "title": "Elsa's Powers Revealed",
+          "description": "During the ballroom scene at Elsa's coronation, her icy powers are accidentally exposed, leading to chaos and fear among the guests.",
           "dialogue": [
             {
-              "speaker": "Elise",
-              "line": "The ice resonates with a power long dormant, stirring memories within me."
+              "speaker": "Elsa",
+              "line": "I can't conceal it any longer. My powers are too strong."
             },
             {
-              "speaker": "Elder Frostweaver",
-              "line": "Be cautious, Elise. The past holds secrets that may shape your future."
+              "speaker": "Anna",
+              "line": "Elsa, what's happening? We need to leave before things get worse."
             }
           ]
         },
         {
           "id": 2,
-          "title": "Frostfire Revelation",
-          "description": "A sudden blizzard engulfs Elise's village, threatening to freeze all within its icy grasp. As she struggles to contain the storm, a fiery presence emerges, challenging her control over the elements.",
+          "title": "Hans's Betrayal",
+          "description": "In a shocking twist, Prince Hans reveals his true intentions and turns against Anna and Elsa, threatening to seize power for himself.",
           "dialogue": [
             {
-              "speaker": "Elise",
-              "line": "My frostcraft clashes with this fiery force, creating a dangerous dance of ice and flame."
+              "speaker": "Hans",
+              "line": "I never loved you, Anna. It's time for me to take control of Arendelle."
             },
             {
-              "speaker": "Councilor Astra",
-              "line": "Your duty is clear, Elise. Protect the village, even if it means facing your fears."
+              "speaker": "Anna",
+              "line": "Hans, how could you? We trusted you!"
             }
           ]
         },
         {
           "id": 3,
-          "title": "Embers of Betrayal",
-          "description": "In the shimmering light of the Glacial Palace, Elise confronts a figure from her past, whose betrayal threatens to shatter the fragile peace of Glaciala. As secrets unravel, Elise must choose between loyalty to her realm and the bonds of family.",
+          "title": "Sisterly Sacrifice",
+          "description": "Facing a life-threatening situation, Anna makes the ultimate sacrifice to save Elsa, proving that true love can thaw a frozen heart.",
           "dialogue": [
             {
-              "speaker": "Elise",
-              "line": "Betrayal cuts deeper than any icy blade. I must tread carefully, for the storm within grows stronger."
+              "speaker": "Anna",
+              "line": "Elsa, I love you. This is what true love means."
             },
             {
-              "speaker": "Younger Sister",
-              "line": "Elise, I believe in you. Together, we can weather any tempest, no matter how icy or fierce."
+              "speaker": "Elsa",
+              "line": "No, Anna, please! Don't do this!"
             }
           ]
         }

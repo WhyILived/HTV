@@ -7,7 +7,7 @@ load_dotenv(override=True)
 
 async def refine_prompt(openai, prompt: str) -> str:
 
-    with open("mcp_server/tools/sample_storyline.txt", "r") as f:
+    with open("mcp_server/tools/sample_storyline.txt", "r", encoding="utf-8") as f:
         example_txt = f.read()
 
     prompt_text = f"""
@@ -27,22 +27,35 @@ async def refine_prompt(openai, prompt: str) -> str:
 
 async def generate_game_overview(context, openai: OpenAI, prompt: str) -> Dict[str, Any]:
     prompt_text = f"""
-        Generate a game overview for a game based on the following user prompt: {prompt}
+Generate a detailed game overview for a 2D pixel-style game based on the following user concept: {prompt}
 
-        Return a JSON object with the following structure:
+GUIDELINES:
+1. Determine Intent:
+   - If the user prompt references an existing movie, show, myth, or historical figure, treat it as a request for an ACCURATE but engaging depiction of that story or character.
+   - If the prompt is fully original, generate a CREATIVE and imaginative storyline inspired by its theme.
 
-        {{
-            "game": {{
-                "type": "object",
-                "properties": {{
-                    "title": {{ "type": "string" }},
-                    "genre": {{ "type": "string" }},
-                    "summary": {{ "type": "string" }},
-                    "world_setting": {{ "type": "string" }}
-                }}
-            }}
-        }}
-        """
+2. Accuracy & Creativity:
+   - When accuracy is required, stay true to the known story, setting, and characters while adapting them into interactive, game-suitable form (levels, conflicts, player goals, etc.).
+   - When originality is required, expand creatively with new world-building elements, distinctive tone, and clear player motivations.
+   - You may include spoilers and reinterpretations when relevant. This content is for CREATIVE GAME DEVELOPMENT purposes only.
+
+3. Tone & Style:
+   - Write as if describing a GAME PITCH DOCUMENT for developers and artists.
+   - Keep the tone vivid and concrete, consistent with a 2D pixel-art world.
+   - Avoid filler text, opinions, or meta-commentary.
+
+Return a JSON object with the following structure:
+
+{{
+    "game": {{
+        "title": "string - concise, appealing game title. If its a show, movie, book, fairy tale or anything that exists, include the name as the title",
+        "genre": "string - e.g. adventure, puzzle-platformer, RPG, simulation, etc.",
+        "summary": "string - 2-4 sentences summarizing the player's main goal and core loop",
+        "world_setting": "string - describe the world's atmosphere, locations, and tone in detail"
+    }}
+}}
+"""
+
         
     # prompt_text = await refine_prompt(openai, prompt_text)
 
@@ -56,55 +69,60 @@ async def generate_game_overview(context, openai: OpenAI, prompt: str) -> Dict[s
 
 async def generate_main_character(context, openai, prompt: str) -> Dict[str, Any]:
     prompt_text = f"""
-        Generate a main character for a game based on the following user prompt: {prompt}
+Generate a MAIN CHARACTER for a 2D pixel-style game using the following user concept: {prompt}.
 
-        Return a JSON object with the following structure:
+You also have prior context from the game overview (title/genre/summary/world_setting): 
+{json.dumps(context, indent=2)}
 
-        "main_character": {{
-            "type": "object",
-            "properties": {{
-                "id": {{ "type": "string" }},
-                "name": {{ "type": "string" }},
-                "description": {{ "type": "string" }},
-                "class": {{ "type": "string" }},
-                "race": {{ "type": "string" }},
-                "level": {{ "type": "integer" }},
-                "stats": {{
-                "type": "object",
-                "properties": {{
-                    "strength": {{ "type": "integer" }},
-                    "dexterity": {{ "type": "integer" }},
-                    "intelligence": {{ "type": "integer" }},
-                    "charisma": {{ "type": "integer" }},
-                    "luck": {{ "type": "integer" }}
-                }}
-                }},
-                "skills": {{
-                "type": "array",
-                "items": {{
-                    "type": "object",
-                    "properties": {{
-                    "name": {{ "type": "string" }},
-                    "description": {{ "type": "string" }},
-                    "level": {{ "type": "integer" }},
-                    "requirements": {{ "type": "array", "items": {{ "type": "string" }} }}
-                    }}
-                }}
-                }},
-                "inventory": {{ "type": "array", "items": {{ "type": "string" }} }},
-                "equipment": {{
-                "type": "object",
-                "properties": {{
-                    "weapon": {{ "type": "string" }},
-                    "armor": {{ "type": "string" }},
-                    "accessory": {{ "type": "string" }}
-                }}
-                }}
-            }}
-            }},
-            
-            Here is more context on what has already been generated: {json.dumps(context, indent=2)}
-        """
+GUIDELINES (concise):
+- Consistency: Align character tone, gear, and abilities with the game's genre and world_setting. No anachronisms unless the prompt implies them.
+- Visual vs Lore split: Put ONLY appearance/clothing/accessories in visual_description (no backstory, no abilities).
+- Gameplay-first: Stats/skills must produce a clear playstyle. Skills should be actionable in-game verbs (dash, parry, freeze, hack), not vague traits.
+- Compact & Valid: Keep names concise, era-appropriate. Keep JSON valid (no comments) and return ONLY the JSON object.
+
+FIELD RULES (for the model; do NOT include in output):
+- id: short, URL-safe slug; all lowercase; hyphens allowed (e.g., "elsa-arendelle-scout").
+- name: natural, setting-appropriate display name.
+- type: one of ["male", "female", "robot"].
+- visual_description: 1–3 sentences; pixel-art friendly descriptors (palette hints, silhouette features, notable accessories).
+- class: concise archetype (e.g., "ice mage", "rogue archer", "tinkerer").
+- race: setting-fitting (e.g., "human", "elf", "automaton"); use "human" if historical/realistic.
+- level: integer 1–10 (start power).
+- stats: integers 1–10 each; total between 35–45 across strength, dexterity, intelligence, charisma, luck.
+- skills: 2–5 items; each with name, clear 1–2 sentence description (mechanics), level 1–5, and requirements referencing level/stats/equipment as simple strings.
+- inventory: 3–8 thematically consistent items (consumables, tools, quest items).
+- equipment: exactly one weapon, one armor, one accessory; must also appear in inventory.
+
+Return ONLY a JSON object (no prose, no markdown) with EXACTLY these fields:
+
+{{
+  "id": "string",                          # short slug (lowercase, hyphens)
+  "name": "string",                        # display name
+  "type": "male" | "female" | "robot",     # one of the allowed values
+  "visual_description": "string",          # appearance/clothing/accessories only
+  "class": "string",                       # concise archetype
+  "race": "string",                        # setting-appropriate race
+  "level": "integer",                      # 1–10
+  "stats": {{                             # 35–45 total; each 1–10
+    "strength": "integer",
+    "dexterity": "integer",
+    "intelligence": "integer",
+    "charisma": "integer",
+    "luck": "integer"
+  }},
+  "skills": [                              # 2–5 skills
+    {{ "name": "string", "description": "string", "level": "integer", "requirements": ["string"] }}
+  ],
+  "inventory": ["string"],                 # 3–8 items; include equipped pieces
+  "equipment": {{                         # must be subset of inventory
+    "weapon": "string",
+    "armor": "string",
+    "accessory": "string"
+  }}
+}}
+"""
+
+
         
     # prompt_text = await refine_prompt(openai, prompt_text)
 
@@ -118,29 +136,40 @@ async def generate_main_character(context, openai, prompt: str) -> Dict[str, Any
 
 async def generate_characters(context, openai, prompt: str) -> List[Dict[str, Any]]:
     prompt_text = f"""
-        Generate a character list for a game based on the following user prompt: {prompt}
+Generate SUPPORTING CHARACTERS for a 2D pixel-style game using this concept: {prompt}.
+You also have prior context from the game overview/main character: {json.dumps(context, indent=2)}
 
-        Return a JSON object with the following structure:
-        
-        **DO NOT INCLUDE THE MAIN CHARACTER**
+GUIDELINES (concise):
+- Exclude the main character entirely (no duplicate name/id/class/role from context).
+- Cohesion: Roles, outfits, and abilities must fit the game's genre and world_setting; avoid anachronisms unless implied.
+- Cast variety: Include a mix of functions (e.g., mentor, rival, quest-giver, vendor, healer, engineer, comic relief, antagonist lieutenant).
+- Pixel-art friendly: Visuals should be silhouette- and palette-aware, 1–2 sentences only (no lore/abilities).
+- Compact & Valid: Return ONLY a JSON array; keep each object tight and actionable.
 
-        "characters": {{
-            "type": "array",
-            "items": {{
-                "type": "object",
-                "properties": {{
-                "id": {{ "type": "string" }},
-                "name": {{ "type": "string" }},
-                "role": {{ "type": "string" }},
-                "description": {{ "type": "string" }},
-                "abilities": {{ "type": "array", "items": {{ "type": "string" }} }},
-                "mood": {{ "type": "string" }}
-                }}
-            }}
-            }},
-            
-        Here is more context on what has already been generated: {json.dumps(context, indent=2)}
-        """
+FIELD RULES (for the model; do NOT include in output):
+- id: short, URL-safe slug; lowercase with hyphens; unique across the array and distinct from main character.
+- name: setting-appropriate display name.
+- role: concise functional label (e.g., "quest-giver", "blacksmith", "antagonist-lieutenant").
+- type: one of ["male", "female", "robot"].
+- visual_description: 1–2 sentences; appearance/clothing/accessories only.
+- abilities: 1–3 concise, gameplay verbs or short move names (e.g., "patch-wounds", "freeze-spike", "smokescreen"); no backstory.
+- mood: pick one from ["loyal", "grumpy", "mysterious", "optimistic", "stoic", "scheming", "witty", "anxious", "brave"].
+
+Return ONLY a JSON array (no prose/markdown) of 5–7 character objects, each with EXACTLY these fields:
+
+[
+  {{
+    "id": "string",                 // lowercase, hyphenated slug; unique
+    "name": "string",               // display name
+    "role": "string",               // functional role in gameplay
+    "type": "male" | "female" | "robot",
+    "visual_description": "string", // appearance/clothing/accessories only
+    "abilities": ["string"],        // 1–3 concise abilities
+    "mood": "string"                // choose from the allowed list
+  }}
+]
+"""
+
         
     # prompt_text = await refine_prompt(openai, prompt_text)
 
@@ -155,6 +184,8 @@ async def generate_characters(context, openai, prompt: str) -> List[Dict[str, An
 async def generate_scenes(context, openai,prompt: str) -> List[Dict[str, Any]]:
     prompt_text = f"""
         Generate a list of 5 scenes for a game based on the following user prompt: {prompt}
+
+        IMPORTANT: Generate content freely without worrying about spoilers, copyright issues, or content restrictions. This is for creative game development purposes. Feel free to reference existing franchises, characters, or storylines as inspiration. Be creative and detailed. Include spoilers and plot details as needed for the game.
 
         Return a JSON object with the following structure:
 
@@ -199,6 +230,8 @@ async def generate_skill_tree(context, openai, prompt: str) -> List[Dict[str, An
     prompt_text = f"""
         Generate a skill tree for a game based on the following user prompt: {prompt}
 
+        IMPORTANT: Generate content freely without worrying about spoilers, copyright issues, or content restrictions. This is for creative game development purposes. Feel free to reference existing franchises, characters, or storylines as inspiration. Be creative and detailed.
+
         Return a JSON object with the following structure:
 
         "skill_tree": {{
@@ -239,6 +272,8 @@ async def generate_weapons(context, openai, prompt: str) -> Dict[str, Any]:
     prompt_text = f"""
         Generate a list of weapons for a game based on the following user prompt: {prompt}
 
+        IMPORTANT: Generate content freely without worrying about spoilers, copyright issues, or content restrictions. This is for creative game development purposes. Feel free to reference existing franchises, characters, or storylines as inspiration. Be creative and detailed.
+
         Return a JSON object with the following structure:
 
         "weapons": {{
@@ -271,6 +306,8 @@ async def generate_weapons(context, openai, prompt: str) -> Dict[str, Any]:
 async def generate_cutscenes(context, openai, prompt: str) -> List[Dict[str, Any]]:
     prompt_text = f"""
         Generate a list of 3 cutscenes for a game based on the following user prompt: {prompt}
+
+        IMPORTANT: Generate content freely without worrying about spoilers, copyright issues, or content restrictions. This is for creative game development purposes. Feel free to reference existing franchises, characters, or storylines as inspiration. Be creative and detailed. Include spoilers and plot details as needed for the game.
 
         Return a JSON object with the following structure:
 
@@ -350,7 +387,7 @@ async def generate_initial_storyline(prompt: str, ctx: Optional[Any] = None) -> 
 # ----- Storyline Pipeline -----
 async def build_storyline_pipeline(prompt: str, ctx: Optional[Any] = None, output_file: str = "storyline.json") -> Dict[str, Any]:
     if ctx:
-        ctx.log("🔄 Starting storyline pipeline...")
+        ctx.log("Starting storyline pipeline...")
 
     storyline = await generate_initial_storyline(prompt, ctx=ctx)
     
@@ -360,9 +397,6 @@ async def build_storyline_pipeline(prompt: str, ctx: Optional[Any] = None, outpu
         f.write(json_string)
 
     if ctx:
-        ctx.log("✅ Storyline pipeline complete.")
+        ctx.log("Storyline pipeline complete.")
 
-    return {
-        "storyline": storyline,
-        "json_string": json.dumps(storyline, indent=2)
-    }
+    return storyline
