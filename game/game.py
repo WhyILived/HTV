@@ -2,6 +2,7 @@ import json
 import os
 import random
 import pygame
+import math
 from typing import Dict, List, Any, Optional, Tuple
 
 # ---------- CONFIG ----------
@@ -26,6 +27,18 @@ WHITE = (255, 255, 255)
 BLUE = (100, 150, 255)
 GREEN = (50, 200, 100)
 RED = (255, 80, 80)
+
+# Particle colors - autumn-like colors for leaf effect
+PARTICLE_COLORS = [
+    (255, 140, 0),   # Orange
+    (255, 69, 0),    # Red-orange
+    (255, 215, 0),   # Gold
+    (255, 165, 0),   # Orange
+    (255, 20, 147),  # Deep pink
+    (50, 205, 50),   # Lime green
+    (255, 192, 203), # Pink
+    (255, 160, 122), # Light salmon
+]
 
 # ---------- SAMPLE DATA ----------
 SAMPLE_DATA = {
@@ -64,6 +77,101 @@ def load_storyline(filename="storyline.json") -> Dict[str, Any]:
             print(f"[WARN] Failed to load {filename}: {e}")
     print("[INFO] Using SAMPLE_DATA.")
     return SAMPLE_DATA
+
+# ---------- PARTICLE SYSTEM ----------
+class Particle:
+    def __init__(self, x: float, y: float, color: Tuple[int, int, int]):
+        self.x = x
+        self.y = y
+        self.vx = random.uniform(-20, 20)  # Random horizontal drift
+        self.vy = random.uniform(10, 30)   # Falling speed
+        self.color = color
+        self.life = 1.0
+        self.decay = random.uniform(0.005, 0.015)  # How fast it fades
+        self.size = random.uniform(2, 5)  # Random size
+        self.rotation = 0
+        self.rotation_speed = random.uniform(-2, 2)  # Gentle rotation
+    
+    def update(self, dt: float):
+        # Apply gravity
+        self.vy += 50 * dt  # Gravity acceleration
+        
+        # Update position
+        self.x += self.vx * dt
+        self.y += self.vy * dt
+        
+        # Update rotation
+        self.rotation += self.rotation_speed * dt
+        
+        # Fade out
+        self.life -= self.decay * dt
+        
+        # Add some wind effect (slight horizontal drift)
+        self.vx += random.uniform(-5, 5) * dt
+        self.vx = max(-30, min(30, self.vx))  # Limit wind speed
+    
+    def is_alive(self) -> bool:
+        return self.life > 0 and self.y < WINDOW_HEIGHT + 50
+    
+    def draw(self, screen: pygame.Surface, camera_offset: Tuple[int, int]):
+        if self.life <= 0:
+            return
+        
+        # Calculate screen position
+        screen_x = int(self.x - camera_offset[0])
+        screen_y = int(self.y - camera_offset[1])
+        
+        # Skip if off-screen
+        if screen_x < -10 or screen_x > WINDOW_WIDTH + 10 or screen_y < -10 or screen_y > WINDOW_HEIGHT + 10:
+            return
+        
+        # Create color with alpha based on life
+        alpha = int(255 * self.life)
+        color_with_alpha = (*self.color, alpha)
+        
+        # Draw particle as a small circle or rotated rectangle (leaf-like)
+        if random.random() < 0.7:  # 70% chance to be a circle
+            pygame.draw.circle(screen, self.color, (screen_x, screen_y), int(self.size))
+        else:  # 30% chance to be a small rectangle (leaf-like)
+            # Create a small surface for rotation
+            leaf_surface = pygame.Surface((int(self.size * 2), int(self.size)), pygame.SRCALPHA)
+            leaf_surface.fill(color_with_alpha)
+            # Rotate the leaf
+            rotated_leaf = pygame.transform.rotate(leaf_surface, self.rotation)
+            leaf_rect = rotated_leaf.get_rect(center=(screen_x, screen_y))
+            screen.blit(rotated_leaf, leaf_rect)
+
+class ParticleSystem:
+    def __init__(self):
+        self.particles: List[Particle] = []
+        self.spawn_timer = 0.0
+        self.spawn_rate = 0.1  # Spawn a particle every 0.1 seconds
+        self.max_particles = 100  # Limit particles for performance
+    
+    def update(self, dt: float):
+        # Spawn new particles
+        self.spawn_timer += dt
+        if self.spawn_timer >= self.spawn_rate and len(self.particles) < self.max_particles:
+            # Spawn particle at random position along the top of the screen
+            x = random.uniform(-50, WINDOW_WIDTH + 50)
+            y = -20  # Start above the screen
+            color = random.choice(PARTICLE_COLORS)
+            self.particles.append(Particle(x, y, color))
+            self.spawn_timer = 0.0
+        
+        # Update existing particles
+        for particle in self.particles[:]:  # Use slice to avoid modification during iteration
+            particle.update(dt)
+            if not particle.is_alive():
+                self.particles.remove(particle)
+    
+    def draw(self, screen: pygame.Surface, camera_offset: Tuple[int, int]):
+        for particle in self.particles:
+            particle.draw(screen, camera_offset)
+    
+    def clear(self):
+        """Clear all particles"""
+        self.particles.clear()
 
 # ---------- ENTITIES ----------
 class Entity:
@@ -445,6 +553,9 @@ def run_game(storyline):
     # Camera
     cam = [player.rect.centerx - WINDOW_WIDTH//2, player.rect.centery - WINDOW_HEIGHT//2]
 
+    # Particle system
+    particle_system = ParticleSystem()
+
     interaction_text = ""
     interaction_timer = 0.0
     scene_active = None
@@ -529,6 +640,7 @@ def run_game(storyline):
         # Update
         player.update(dt, obstacles, BACKGROUND_COLOR_KEY)
         update_dialogue(dt)
+        particle_system.update(dt)
         
         # Update scene intro timer
         if show_scene_intro and scene_intro_timer > 0:
@@ -566,6 +678,9 @@ def run_game(storyline):
         # Player
         player.draw(screen,cam)
         screen.blit(font.render(player.name,True,WHITE),(player.rect.x-cam[0],player.rect.y-16-cam[1]))
+
+        # Particle effects (drawn after game objects but before UI)
+        particle_system.draw(screen, cam)
 
         # UI
         screen.blit(bigfont.render(storyline.get("game",{}).get("title","RPG"),True,WHITE),(8,8))
