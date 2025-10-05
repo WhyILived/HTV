@@ -13,7 +13,7 @@ from openai import OpenAI
 load_dotenv(override=True)
 
 class MCPOpenAIClient:
-    def __init__(self, model="gpt-4o"):
+    def __init__(self, model="gpt-5-mini"):
         self.openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         self.model = model  # Configurable model
         self.mcp_tools = []
@@ -145,7 +145,7 @@ class MCPOpenAIClient:
             messages = [
                 {
                     "role": "system",
-                    "content": "You are a helpful assistant with access to game development tools. Execute exactly ONE tool call per user request. Do not repeat tool calls. If the user asks for multiple things, execute them one at a time in sequence.\n\nTOOL USAGE:\n- 'generate_initial_storyline': Creates a storyline and saves it to storyline.json\n- 'generate_sprites_from_storyline': Generates character sprites from existing storyline.json\n- 'list_directory': Lists files in a directory\n- 'read_file': Reads file contents\n\nExecute only the tool the user requests. Do not call the same tool multiple times."
+                    "content": "You are a helpful assistant with access to game development tools. If the user asks for multiple things, execute them one at a time in sequence.\n\nTOOL USAGE:\n- 'generate_initial_storyline': Creates a storyline and saves it to storyline.json\n- 'generate_sprites_from_storyline': Generates character sprites from existing storyline.json\n- 'list_directory': Lists files in a directory\n- 'read_file': Reads file contents\n\nExecute only the tool the user requests. Do not call the same tool multiple times."
                 },
                 {
                     "role": "user",
@@ -225,8 +225,8 @@ class MCPOpenAIClient:
 
 async def main():
     """Main interactive chat function."""
-    # You can change the model here: "gpt-5", "gpt-5-mini", "gpt-4o", "gpt-4o-mini", etc.
-    client = MCPOpenAIClient(model="gpt-5")
+    # You can change the model here: "gpt-5-nano", "gpt-5", "gpt-5-mini", "gpt-4o", etc.
+    client = MCPOpenAIClient(model="gpt-5-mini")
     
     # Check if API key is set
     if not os.getenv("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY") == "your_openai_api_key_here":

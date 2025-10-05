@@ -160,12 +160,14 @@ def _generate_image_with_gemini(prompt: str, reference_image_path: str = None, o
 
 class CharacterConfig:
     """Configuration for character generation."""
-    def __init__(self, name: str, character_type: str, custom_prompt: str, background_color: str = "#ea00ff", size: str = "64"):
+    def __init__(self, name: str, character_type: str, custom_prompt: str, background_color: str = "#ea00ff", size: str = "64", reference_media: Optional[str] = None, display_name: Optional[str] = None):
         self.name = name
         self.character_type = character_type
         self.custom_prompt = custom_prompt
         self.background_color = background_color
         self.size = size
+        self.reference_media = reference_media
+        self.display_name = display_name or name
 
 
 class SpritesheetPipeline:
@@ -190,36 +192,43 @@ class SpritesheetPipeline:
         """Load prompts for the 4 generation steps."""
         # Base character description from custom prompt
         base_description = self.config.custom_prompt if self.config.custom_prompt else f"a {self.config.character_type} character"
+        # If we have reference media, add explicit name-from-reference mention
+        name_from_reference = None
+        if self.config.reference_media and str(self.config.reference_media).strip().lower() != "none":
+            name_from_reference = f"{self.config.display_name} from {self.config.reference_media}"
+            base_description = f"{base_description}. This is {name_from_reference}."
         
         return {
             # Base image - AI selects from example pictures
             "base": f"Create a pixelated {base_description} using the reference image as a style guide. "
                    f"Match the pixel art style, proportions, and visual characteristics of the reference image exactly. "
                    f"Keep the character design consistent with the reference but adapt it to your custom description. "
-                   f"MAKE SURE ITS TURNING AN ALMOST 45 DEGREES SIMILAR TO TOP DOWN GAMES. DONT HAVE ANY WEAPONS OR ITEMS IN ITS HANDS. "
-                   f"The **ENTIRE BACKGROUND MUST BE EXACTLY {self.config.background_color}** - NO TRANSPARENCY, NO OTHER COLORS. "
-                   f"The character must be **centered**, well-proportioned, and rendered in a **high-detail {self.config.size} pixel art style**.",
+                   f"MAKE SURE ITS TURNING AN ALMOST 45 DEGREES SIMILAR TO TOP DOWN GAMES AND TURNING IN THE SAME DIRECTION AS THE REFERENCE IMAGE. DONT HAVE ANY WEAPONS OR ITEMS IN ITS HANDS. "
+                   f"The **ENTIRE BACKGROUND MUST BE EXACTLY {self.config.background_color}** - NO TRANSPARENCY, NO OTHER COLORS. NO SHADOWS. "
+                   f"The character must be **centered**, well-proportioned, look really nice, and rendered in a **high-detail {self.config.size} pixel art style**.",
             
             # Idle animation - slight breathing movement
             "idle": f"EDIT the base character image to create a subtle idle breathing animation. "
                    f"Make a bit of change - the character should down a bit to show breathing. "
                    f"Keep the same pose, clothing, and all other details exactly the same. "
                    f"The **ENTIRE BACKGROUND MUST BE EXACTLY {self.config.background_color}** - NO TRANSPARENCY, NO OTHER COLORS. "
-                   f"Ensure the character is centered and maintains the same proportions as the base image.",
+                   f"Ensure the character is centered and maintains the same proportions as the base image." + (f" This is {name_from_reference}." if name_from_reference else ""),
             
             # Walk animation 1 - right leg forward, left leg back
             "walk1": f"EDIT the base character image to create a walking pose. "
                     f"POSTURE DETAILS: For the RIGHT SIDE of the picture, the leg should be FORWARD and the hand should be BACK. "
+                    f"BODY SHOULD STILL FACE THE SAME DIRECTION AS THE BASE IMAGE. "
                     f"For the LEFT SIDE of the picture, the leg should be BENT and the hand should be FORWARD. "
                     f"Show a natural walking step with the right leg extended forward and left leg bent behind. "
                     f"Arms should swing naturally - right arm back, left arm forward. "
                     f"Body should be slightly leaned forward in a walking motion. "
                     f"Keep the same character design, colors, and style as the base image. "
                     f"The **ENTIRE BACKGROUND MUST BE EXACTLY {self.config.background_color}** - NO TRANSPARENCY, NO OTHER COLORS. "
-                    f"Ensure the character is centered and well-proportioned for a {self.config.size} pixel art style.",
+                    f"Ensure the character is centered and well-proportioned for a {self.config.size} pixel art style." + (f" This is {name_from_reference}." if name_from_reference else ""),
             
             # Walk animation 2 - opposite of walk1 (left leg forward, right leg back)
-            "walk2": f"EDIT the base character image to create the second walking pose - the OPPOSITE of walk1. "
+            "walk2": f"EDIT the base character image to create the second walking pose. "
+                    f"BODY SHOULD STILL FACE THE SAME DIRECTION AS THE BASE IMAGE. "
                     f"POSTURE DETAILS: For the LEFT SIDE of the picture, the leg should be FORWARD and the hand should be BACK. "
                     f"For the RIGHT SIDE of the picture, the leg should be BENT and the hand should be FORWARD. "
                     f"Show a natural walking step with the left leg extended forward and right leg bent behind. "
@@ -227,7 +236,7 @@ class SpritesheetPipeline:
                     f"Body should be slightly leaned forward in a walking motion. "
                     f"Keep the same character design, colors, and style as the base image. "
                     f"The **ENTIRE BACKGROUND MUST BE EXACTLY {self.config.background_color}** - NO TRANSPARENCY, NO OTHER COLORS. "
-                    f"Ensure the character is centered and well-proportioned for a {self.config.size} pixel art style."
+                    f"Ensure the character is centered and well-proportioned for a {self.config.size} pixel art style." + (f" This is {name_from_reference}." if name_from_reference else "")
         }
     
     def _get_reference_path(self, ref_name: str) -> Path:
@@ -457,6 +466,7 @@ class SpritesheetPipeline:
                 print(f"Post-process module unavailable, skipping background removal: {e}", file=sys.stderr, flush=True)
                 process_sprite_solidbackground = None
 
+            refined_file_paths = []
             for key, out_name in name_map.items():
                 if key in results:
                     src_path = self.output_dir / results[key]
@@ -474,8 +484,29 @@ class SpritesheetPipeline:
                             # Fallback: just copy the file
                             import shutil
                             shutil.copyfile(src_path, dst_path)
+                        refined_file_paths.append(dst_path)
                     except Exception as e:
                         print(f"Warning: post-processing failed for {src_path}: {e}", file=sys.stderr, flush=True)
+
+            # In-place refinement so all frames share the same crop box
+            if refined_file_paths:
+                try:
+                    try:
+                        from game.extra_tools.refine_trans import refine_character_sprites
+                    except Exception as e:
+                        print(f"Refine module unavailable, skipping in-place refinement: {e}", file=sys.stderr, flush=True)
+                        refine_character_sprites = None
+
+                    if refine_character_sprites is not None:
+                        print(f"Refining transparent bounds in-place for {name_clean}", file=sys.stderr, flush=True)
+                        refine_character_sprites(
+                            name_clean,
+                            refined_file_paths,
+                            target_dir,
+                            dry_run=False,
+                        )
+                except Exception as e:
+                    print(f"Warning: Failed refine_trans step for {self.config.name}: {e}", file=sys.stderr, flush=True)
         except Exception as e:
             print(f"Warning: Failed post-processing step for {self.config.name}: {e}", file=sys.stderr, flush=True)
 
@@ -503,6 +534,17 @@ async def generate_sprites_from_storyline(storyline_file: str = "storyline.json"
     # Extract characters from new JSON structure
     characters = []
     
+    # Pull reference_media from game block if present
+    reference_media = None
+    try:
+        game_block = storyline_data.get("game")
+        if isinstance(game_block, dict):
+            inner_game = game_block.get("game") if "game" in game_block else game_block
+            if isinstance(inner_game, dict):
+                reference_media = inner_game.get("reference_media")
+    except Exception:
+        reference_media = None
+    
     # Add main character
     if "main_character" in storyline_data:
         main_char_data = storyline_data["main_character"]
@@ -514,7 +556,9 @@ async def generate_sprites_from_storyline(storyline_file: str = "storyline.json"
         characters.append({
             "name": main_char.get("name", "MainCharacter"),
             "description": main_char.get("visual_description", "Main character"),
-            "character_type": main_char.get("type", "male")
+            "character_type": main_char.get("type", "male"),
+            "reference_media": reference_media,
+            "display_name": main_char.get("name", "MainCharacter")
         })
     
     # Add other characters
@@ -530,7 +574,9 @@ async def generate_sprites_from_storyline(storyline_file: str = "storyline.json"
                 characters.append({
                     "name": char.get("name", "Character"),
                     "description": char.get("visual_description", "Character"),
-                    "character_type": char.get("type", "male")
+                    "character_type": char.get("type", "male"),
+                    "reference_media": reference_media,
+                    "display_name": char.get("name", "Character")
                 })
     
     print(f"Found {len(characters)} characters for concurrent generation", file=sys.stderr, flush=True)
@@ -548,7 +594,9 @@ async def generate_sprites_from_storyline(storyline_file: str = "storyline.json"
                 character_type=char['character_type'],
                 custom_prompt=char['description'],
                 background_color="#ea00ff",
-                size=64
+                size=64,
+                reference_media=char.get('reference_media'),
+                display_name=char.get('display_name', char['name'])
             )
             
             pipeline = SpritesheetPipeline(config)

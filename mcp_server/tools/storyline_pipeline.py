@@ -62,6 +62,7 @@ Return a JSON object with the following structure:
         "genre": "string - e.g. adventure, puzzle-platformer, RPG, simulation, etc.",
         "summary": "string - 2-4 sentences summarizing the player's main goal and core loop",
         "world_setting": "string - describe the world's atmosphere, locations, and tone in detail"
+        "reference_media": "string - if the user prompt is based on an existing medium, include the name of the medium as the reference_media, for example 'Interstellar' or 'The Matrix' or 'The Lord of the Rings' if the user prompt is based on those explicitly. If no reference media is mentioned, include 'None'"
     }}
 }}
 """
