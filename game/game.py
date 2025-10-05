@@ -6,13 +6,13 @@ import math
 from typing import Dict, List, Any, Optional, Tuple
 
 # ---------- CONFIG ----------
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 500
+WINDOW_WIDTH = 1400
+WINDOW_HEIGHT = 900
 FPS = 30
 PLAYER_SPEED = 250
 NPC_SIZE = (36, 48)
 PLAYER_SIZE = (36, 48)
-WORLD_BOUNDS = pygame.Rect(0, 0, 1000, 700)  # Smaller world
+WORLD_BOUNDS = pygame.Rect(0, 0, 2048, 1364)  # Smaller world
 INTERACT_DISTANCE = 48
 MINIMAP_SIZE = 150
 MINIMAP_POS = (WINDOW_WIDTH - MINIMAP_SIZE - 10, 10)
