@@ -437,6 +437,48 @@ class SpritesheetPipeline:
         print(f"Character generation complete! Generated {len(results)} sprites in {total_time:.2f}s", file=sys.stderr, flush=True)
         print(f"Output directory: {self.output_dir}", file=sys.stderr, flush=True)
         
+        # Post-process: remove solid background and copy to game/assets/sprites with naming convention
+        try:
+            target_dir = Path("game/assets/sprites")
+            target_dir.mkdir(parents=True, exist_ok=True)
+
+            name_clean = self.config.name  # already normalized to underscores/lowercase upstream
+            name_map = {
+                "base": f"{name_clean}_idle_1.png",
+                "idle": f"{name_clean}_idle_2.png",
+                "walk1": f"{name_clean}_walk_1.png",
+                "walk2": f"{name_clean}_walk_2.png",
+            }
+
+            # Lazy import here to avoid server startup failure if Pillow isn't installed
+            try:
+                from game.extra_tools.process_sprite_solidbackground import process_sprite_solidbackground
+            except Exception as e:
+                print(f"Post-process module unavailable, skipping background removal: {e}", file=sys.stderr, flush=True)
+                process_sprite_solidbackground = None
+
+            for key, out_name in name_map.items():
+                if key in results:
+                    src_path = self.output_dir / results[key]
+                    dst_path = target_dir / out_name
+                    print(f"Post-processing sprite {key}: {src_path} -> {dst_path}", file=sys.stderr, flush=True)
+                    try:
+                        if process_sprite_solidbackground is not None:
+                            # Use high tolerance behavior of the processing script (internal defaults are lenient)
+                            process_sprite_solidbackground(
+                                str(src_path),
+                                str(dst_path),
+                                background_color=self.config.background_color,
+                            )
+                        else:
+                            # Fallback: just copy the file
+                            import shutil
+                            shutil.copyfile(src_path, dst_path)
+                    except Exception as e:
+                        print(f"Warning: post-processing failed for {src_path}: {e}", file=sys.stderr, flush=True)
+        except Exception as e:
+            print(f"Warning: Failed post-processing step for {self.config.name}: {e}", file=sys.stderr, flush=True)
+
         return results
 
 

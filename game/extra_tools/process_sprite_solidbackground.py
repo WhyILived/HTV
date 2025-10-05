@@ -1,7 +1,7 @@
 from PIL import Image
 from collections import deque, Counter
 
-def sample_background_color(img, tolerance=5):
+def sample_background_color(img, tolerance=10):
     """
     Sample background color from the four corners of the image.
     Returns the most common color among the corners with RGB tolerance.
@@ -138,7 +138,7 @@ def process_sprite_solidbackground(input_file, output_file, target_size=(256, 38
     # Remove background using tolerance-based color matching
     width, height = downscaled_img.size
     pixels = downscaled_img.load()
-    color_tolerance = 10  # Use larger tolerance for removal to catch more similar colors
+    color_tolerance = 20  # Increased tolerance to catch more near-background pixels
     
     def is_background_color(x, y):
         """Check if pixel matches background color within tolerance"""
