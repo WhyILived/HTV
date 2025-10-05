@@ -201,7 +201,7 @@ class MapPipeline:
             "nature": "nature.png",    # Use existing reference
             "halls": "halls.png",     # Use existing reference
             "market": "market.png",    # Use existing reference
-            "misc": "misc.png"       # Use existing reference
+            "misc": "room.png"       # Use room as reference for misc
         }
         
         # Prompts for each scene type
@@ -236,21 +236,21 @@ class MapPipeline:
             "halls": f"create a **High-detail pixel art** 2D top-down indoor hallway/corridor scene in a similar style to the reference image based on this additional context: " 
                     f"{base_description}. "
                     f"**Reference character style and color palette**."
-                    f"Design an architectural interior with walls, floor, ceiling, doors, and corridor features while making sure there is enough space for the character to move around. "
+                    f"Include detailed walls, floor, ceiling, doors, and corridor features while making sure there is enough space for the character to move around. "
                     f"Use a clear **top-down** perspective similar to the reference image. "
                     f"Fill the entire aspect ratio. as the reference image.",
             
             "market": f"create a **High-detail pixel art** 2D **top-down** outdoor marketplace background in a similar style to the reference image based on this additional context: "
                      f"{base_description}. "
                      f"**Reference character style and color palette**"
-                     f"Design a bustling market scene with stalls, vendors, goods, and market atmosphere. "
+                     f"Include detailed stalls, vendors, goods, and market atmosphere while making sure there is enough space for the character to move around. "
                      f"Use a clear **top-down** perspective similar to the reference image. "
                      f"Fill the entire aspect ratio. as the reference image.",
             
-            "misc": f"create a **High-detail pixel art** 2D top-down miscellaneous scene in a similar style to the reference image based on this additional context: " 
+            "misc": f"create a **High-detail pixel art** 2D top-down miscellaneous scene using the **art style and color palette** of the reference image but be **creative and heavily based on this custom description**: " 
                    f"{base_description}. "
-                   f"**Reference character style and color palette**."
-                   f"Design a unique scene based on the custom description with appropriate environmental elements while making sure there is enough space for the character to move around. "
+                   f"**Use only the reference image's art style and color palette** - do not copy the room layout or furniture. "
+                   f"Design a unique scene based heavily on the custom description with appropriate environmental elements while making sure there is enough space for the character to move around. "
                    f"Use a clear **top-down** perspective similar to the reference image. "
                    f"Fill the entire aspect ratio. as the reference image."
         }
