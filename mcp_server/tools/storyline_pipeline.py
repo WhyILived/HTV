@@ -5,6 +5,15 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
+async def get_response(openai, prompt: str) -> str:
+    response = openai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=1
+    )
+
+    return response.choices[0].message.content
+
 async def refine_prompt(openai, prompt: str) -> str:
 
     with open("mcp_server/tools/sample_storyline.txt", "r", encoding="utf-8") as f:
@@ -81,7 +90,6 @@ GUIDELINES (concise):
 - Compact & Valid: Keep names concise, era-appropriate. Keep JSON valid (no comments) and return ONLY the JSON object.
 
 FIELD RULES (for the model; do NOT include in output):
-- id: short, URL-safe slug; all lowercase; hyphens allowed (e.g., "elsa-arendelle-scout").
 - name: natural, setting-appropriate display name.
 - type: one of ["male", "female", "robot"].
 - visual_description: 1–3 sentences; pixel-art friendly descriptors (palette hints, silhouette features, notable accessories).
@@ -95,8 +103,9 @@ FIELD RULES (for the model; do NOT include in output):
 
 Return ONLY a JSON object (no prose, no markdown) with EXACTLY these fields:
 
+The main character should be ONE character only.
+
 {{"main_character": {{
-  "id": "string",                          # short slug (lowercase, hyphens)
   "name": "string",                        # display name
   "type": "male" | "female" | "robot",     # one of the allowed values
   "visual_description": "string",          # appearance/clothing/accessories only
@@ -136,31 +145,29 @@ Generate SUPPORTING CHARACTERS for a 2D pixel-style game using this concept: {pr
 You also have prior context from the game overview/main character: {json.dumps(context, indent=2)}
 
 GUIDELINES (concise):
-- Exclude the main character entirely (no duplicate name/id/class/role from context).
+- Exclude the main character entirely (no duplicate name/class/role from context).
 - Cohesion: Roles, outfits, and abilities must fit the game's genre and world_setting; avoid anachronisms unless implied.
 - Cast variety: Include a mix of functions (e.g., mentor, rival, quest-giver, vendor, healer, engineer, comic relief, antagonist lieutenant).
 - Pixel-art friendly: Visuals should be silhouette- and palette-aware, 1–2 sentences only (no lore/abilities).
 - Compact & Valid: Return ONLY a JSON array; keep each object tight and actionable.
 
 FIELD RULES (for the model; do NOT include in output):
-- id: short, URL-safe slug; lowercase with hyphens; unique across the array and distinct from main character.
 - name: setting-appropriate display name.
 - role: concise functional label (e.g., "quest-giver", "blacksmith", "antagonist-lieutenant").
 - type: one of ["male", "female", "robot"].
 - visual_description: 1–2 sentences; appearance/clothing/accessories only.
-- dialogue: 3 concise, to the point dialogues for the main character to interact with
+- dialogue: 6 sentences of alternating dialogue between the current character and the main character (look at examples)
 - mood: pick one from ["loyal", "grumpy", "mysterious", "optimistic", "stoic", "scheming", "witty", "anxious", "brave"].
 
 Return ONLY a JSON array (no prose/markdown) of 5–7 character objects, each with EXACTLY these fields:
 
 {{ "characters": [
   {{
-    "id": "string",                 // lowercase, hyphenated slug; unique
     "name": "string",               // display name
     "role": "string",               // functional role in gameplay
     "type": "male" | "female" | "robot",
     "visual_description": "string", // appearance/clothing/accessories only
-    "dialogue": [],                 // list of strings of dialogue
+    "dialogue": [],                 // list of strings of alternating dialogue beginning with the character
     "mood": "string"                // choose from the allowed list
   }}
 ]}}
@@ -191,7 +198,9 @@ async def generate_scenes(context, openai,prompt: str) -> List[Dict[str, Any]]:
             "setting": "string",
             "characters": []
             }},
-            
+
+        MAKE SURE THAT THE characters LIST CONTAINS ONLY CHARACTERS FROM THE CHARACTER LIST.
+
         Here is more context on what has already been generated: {json.dumps(context, indent=2)}
         """
         
@@ -249,7 +258,6 @@ async def generate_weapons(context, openai, prompt: str) -> Dict[str, Any]:
 
         "weapons": [
             {{
-                "id": "string",
                 "name": "string",
                 "description": "string",
                 "damage": number,

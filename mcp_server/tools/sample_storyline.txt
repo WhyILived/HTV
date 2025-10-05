@@ -6,7 +6,6 @@
     "world_setting": "In a mystical world where icy landscapes and snow-covered mountains dominate, Elise must navigate through treacherous terrain to fulfill her destiny."
   },
   "main_character": {
-    "id": "elise_the_protector",
     "name": "Elise",
     "type": "Human",
     "visual_description": "string",
@@ -27,122 +26,52 @@
   },
   "characters": [
     {
-      "id": "lucinda_the_sorceress",
       "name": "Lucinda",
       "role": "Ally",
       "visual_description": "A powerful sorceress who can control the elements, Lucinda aids Elise on her quest with her mastery over ice magic.",
-      "outgoing_dialogue": [
-        "Hi. You are Elise, right?",
-        "I'm Lucinda. I've been waiting for you.",
-        "I'm here to help you on your quest."
-      ],
-      "incoming_dialog": [
-        "Yes, I am.",
-        "I've heard so much about you!",
-        "Thank you so much..."
-      ],
+      "dialogue": ["Hi. You are Elise, right?", "Yes, I am.", "I'm Lucinda. I've been waiting for you.", "I've heard so much about you!", "I'm here to help you on your quest.", "Thank you so much..."],
       "mood": "Determined"
     },
     {
-      "id": "vornir_the_ice_king",
       "name": "Vornir",
       "role": "Antagonist",
       "description": "The ruthless Ice King who seeks to plunge the world into eternal winter, standing in Elise's way with his icy minions.",
-      "outgoing_dialogue": [
-        "You are Elise, right?",
-        "I'm Vornir. I've been waiting for you.",
-        "I'm here to stop you."
-      ],
-      "incoming_dialog": [
-        "Yes, I am.",
-        "I've heard about you...",
-        "You won't be able to."
-      ],
+      "dialogue": ["You are Elise, right?", "Yes, I am.", "I'm Vornir. I've been waiting for you.", "I've heard about you...", "I'm here to stop you.", "You won't be able to."],
       "mood": "Malevolent"
     },
     {
-      "id": "thalia_the_wandering_merchant",
       "name": "Thalia",
       "role": "Ally",
       "description": "A mysterious merchant who traverses the frozen lands, offering magical artifacts and valuable information to Elise along her journey.",
-      "outgoing_dialogue": [
-        "Hello. You are Elise, right?",
-        "I'm Thalia. I've been waiting for you.",
-        "I'm here to help you on your quest."
-      ],
-      "incoming_dialog": [
-        "Yes, I am.",
-        "I've heard so much about you!",
-        "Thank you so much..."
-      ],
+      "dialogue": ["Hello. You are Elise, right?", "Yes, I am.", "I'm Thalia. I've been waiting for you.", "I've heard so much about you!", "I'm here to help you on your quest.", "Thank you so much..."],
       "mood": "Enigmatic"
     },
     {
-      "id": "frost_guardian",
       "name": "Frost Guardian",
       "role": "Antagonist",
       "description": "Ancient ice guardians that protect the Frozen Citadel with their frozen spears and chilling presence.",
-      "outgoing_dialogue": [
-        "You are Elise, right?",
-        "I'm Frost Guardian. I've been waiting for you.",
-        "I'm here to stop you."
-      ],
-      "incoming_dialog": [
-        "Yes, I am.",
-        "I've heard about you...",
-        "You won't be able to."
-      ],
+      "dialogue": ["You are Elise, right?", "Yes, I am.", "I'm Frost Guardian. I've been waiting for you.", "I've heard about you...", "I'm here to stop you.", "You won't be able to."],
       "mood": "Hostile"
     },
     {
-      "id": "forest_spirit",
       "name": "Forest Spirit",
       "role": "Neutral",
       "description": "Mystical spirits of the frozen forest who test the resolve of those who enter their domain.",
-      "outgoing_dialogue": [
-        "You are Elise, right?",
-        "I'm Forest Spirit. I've been waiting for you.",
-        "I'm here to help you on your quest."
-      ],
-      "incoming_dialog": [
-        "Yes, I am.",
-        "I've heard so much about you!",
-        "Thank you so much..."
-      ],
+      "dialogue": ["You are Elise, right?", "Yes, I am.", "I'm Forest Spirit. I've been waiting for you.", "It's great to meet you.", "I'm here to help you on your quest.", "Thank you."],
       "mood": "Mysterious"
     },
     {
-      "id": "blizzard_wolf",
       "name": "Blizzard Wolf",
       "role": "Antagonist",
       "description": "Fierce wolves that hunt in the blizzard peaks, their howls echoing through the frozen winds.",
-      "outgoing_dialogue": [
-        "You are Elise, right?",
-        "I'm Blizzard Wolf. I've been waiting for you.",
-        "I'm here to stop you."
-      ],
-      "incoming_dialog": [
-        "Yes, I am.",
-        "I've heard about you...",
-        "You won't be able to."
-      ],
+      "dialogue": ["You are Elise, right?", "Yes, I am.", "I'm Blizzard Wolf. I've been waiting for you.", "I've heard about you...", "I'm here to stop you.", "You won't be able to."],
       "mood": "Aggressive"
     },
     {
-      "id": "ice_cavern_troll",
       "name": "Ice Cavern Troll",
       "role": "Antagonist",
       "description": "Massive trolls that dwell in the ice caverns, wielding clubs made of frozen stone.",
-      "outgoing_dialogue": [
-        "You are Elise, right?",
-        "I'm Ice Cavern Troll. I've been waiting for you.",
-        "I'm here to stop you."
-      ],
-      "incoming_dialog": [
-        "Yes, I am.",
-        "I've heard about you...",
-        "You won't be able to."
-      ],
+      "outgoing_dialogue": ["You are Elise, right?", "Yes, I am.", "I'm Ice Cavern Troll. I've been waiting for you.", "I've heard about you...", "I'm here to stop you.", "You won't be able to."],
       "mood": "Brutal"
     }
   ],
@@ -152,8 +81,8 @@
       "title": "The Frozen Citadel",
       "setting": "Elise arrives at the Frozen Citadel, a massive ice fortress where Vornir, the Ice King, resides.",
       "characters": [
-        "vornir_the_ice_king",
-        "frost_guardian"
+        "Vornir",
+        "Frost Guardian"
       ]
     },
     {
@@ -161,8 +90,8 @@
       "title": "The Frozen Forest",
       "setting": "Elise ventures into the Frozen Forest, where ancient spirits roam and icy creatures lurk in the shadows.",
       "characters": [
-        "thalia_the_wandering_merchant",
-        "forest_spirit"
+        "Thalia",
+        "Forest Spirit"
       ]
     },
     {
@@ -170,8 +99,8 @@
       "title": "The Blizzard Peak",
       "setting": "Elise climbs the treacherous Blizzard Peak, where howling winds and blizzards threaten to throw her off course.",
       "characters": [
-        "lucinda_the_sorceress",
-        "blizzard_wolf"
+        "Lucinda",
+        "Blizzard Wolf"
       ]
     },
     {
@@ -179,7 +108,7 @@
       "title": "The Ice Caverns",
       "setting": "Elise delves into the deep Ice Caverns, where Vornir's minions await with frosty claws and icy traps.",
       "characters": [
-        "ice_cavern_troll"
+        "Ice Cavern Troll"
       ]
     },
     {
@@ -187,8 +116,8 @@
       "title": "The Frozen Throne Room",
       "setting": "Elise confronts Vornir in his Frozen Throne Room, where the final battle for the fate of the frozen world unfolds.",
       "characters": [
-        "vornir_the_ice_king",
-        "lucinda_the_sorceress"
+        "Vornir",
+        "Lucinda"
       ]
     }
   ],
@@ -253,21 +182,18 @@
   ],
   "weapons": [
     {
-      "id": "frostbite_axe",
       "name": "Frostbite Axe",
       "description": "A fearsome axe imbued with icy magic, capable of freezing foes with each strike.",
       "damage": 12,
       "requirements": []
     },
     {
-      "id": "snowstorm_bow",
       "name": "Snowstorm Bow",
       "description": "A bow crafted from enchanted ice, shooting arrows that summon blizzards upon impact.",
       "damage": 10,
       "requirements": []
     },
     {
-      "id": "glacial_spear",
       "name": "Glacial Spear",
       "description": "A spear tipped with razor-sharp ice shards, piercing through armor with ease.",
       "damage": 8,
