@@ -2,35 +2,35 @@
   "game": {
     "game": {
       "title": "Interstellar: The Pixel Odyssey",
-      "genre": "Adventure",
-      "summary": "Embark on a sci-fi adventure as Joseph 'Cooper,' a farmer/test pilot tasked with saving humanity by exploring space, surviving hostile environments, and unraveling the mysteries of time and relativity.",
-      "world_setting": "Set in a pixel-art 2D world inspired by the film Interstellar, players will navigate Dust Bowl Earth, a hidden NASA facility, the Endurance spacecraft, wormhole transit, ocean and icy worlds, and the edge of a black hole, facing isolation, time dilation, and cosmic entities. The tone is a mix of hope, exploration, and the unknown, with pixelated visuals enhancing the mysterious sci-fi atmosphere."
+      "genre": "Adventure RPG",
+      "summary": "Embark on a pixelated journey as Cooper, piloting the Endurance through a wormhole to explore distant planets, solve puzzles, and navigate time-space distortions to save humanity from extinction.",
+      "world_setting": "In a pixelated 2D world, Earth is plagued by crop blight and dust storms, pushing humanity's survival to the brink. Explore Miller's water world with extreme time dilation, Dr. Mann's icy planet, and Edmunds' potentially habitable world. Encounter TARS and CASE robots, and communicate with the fifth-dimensional tesseract to unravel the mysteries of gravity and time."
     }
   },
   "main_character": {
     "main_character": {
-      "id": "joseph-cooper",
-      "name": "Joseph 'Cooper'",
+      "id": "cooper-navigator",
+      "name": "Cooper",
       "type": "male",
-      "visual_description": "A rugged, pixelated farmer/test pilot in a worn flight suit with a faded NASA emblem on his chest and a trusty old pocket watch hanging from his belt.",
-      "class": "Adventurer",
-      "level": 5,
+      "visual_description": "Wearing a pixelated space suit with a helmet and oxygen tank, Cooper carries a digital watch displaying Earth's time.",
+      "class": "Navigator Pilot",
+      "level": 4,
       "stats": {
         "strength": 7,
         "dexterity": 6,
         "intelligence": 8,
-        "charisma": 5,
+        "charisma": 6,
         "luck": 6
       },
       "inventory": {
         "weapons": [
-          "Multi-Tool"
+          "Laser Blaster"
         ],
         "armor": [
-          "Flight Suit"
+          "Space Suit"
         ],
         "accessories": [
-          "Pocket Watch"
+          "Gravity Watch"
         ]
       }
     }
@@ -38,49 +38,58 @@
   "characters": {
     "characters": [
       {
-        "id": "murph",
-        "name": "Murph",
-        "role": "quest-giver",
-        "type": "female",
-        "visual_description": "Young girl in overalls with a faded NASA patch and a mysterious locket.",
-        "dialogue": [],
-        "mood": "stoic"
-      },
-      {
-        "id": "amelia-brand",
-        "name": "Amelia Brand",
-        "role": "engineer",
-        "type": "female",
-        "visual_description": "Scientist in a lab coat with a holographic interface wristband.",
-        "dialogue": [],
-        "mood": "optimistic"
-      },
-      {
-        "id": "tars",
-        "name": "TARS",
-        "role": "companion AI",
-        "type": "robot",
-        "visual_description": "Rectangular robot with movable blocks for communication.",
-        "dialogue": [],
-        "mood": "loyal"
-      },
-      {
-        "id": "case",
-        "name": "CASE",
-        "role": "mechanic",
-        "type": "robot",
-        "visual_description": "Boxy robot with various tools and repair equipment attached.",
-        "dialogue": [],
-        "mood": "grumpy"
-      },
-      {
         "id": "professor-brand",
         "name": "Professor Brand",
         "role": "mentor",
         "type": "male",
-        "visual_description": "Elderly scientist in a lab coat with a notebook full of equations.",
+        "visual_description": "Wearing a lab coat and glasses, with a NASA emblem on his chest.",
         "dialogue": [],
-        "mood": "wise"
+        "mood": "mysterious"
+      },
+      {
+        "id": "amelia-brand",
+        "name": "Amelia Brand",
+        "role": "quest-giver",
+        "type": "female",
+        "visual_description": "Donned in a spacesuit with a communicator in hand.",
+        "dialogue": [],
+        "mood": "brave"
+      },
+      {
+        "id": "miller",
+        "name": "Miller",
+        "role": "guide",
+        "type": "female",
+        "visual_description": "Clad in a diving suit with a distressed expression.",
+        "dialogue": [],
+        "mood": "grumpy"
+      },
+      {
+        "id": "dr-mann",
+        "name": "Dr. Mann",
+        "role": "antagonist-lieutenant",
+        "type": "male",
+        "visual_description": "In an astronaut suit, looking stern and calculating.",
+        "dialogue": [],
+        "mood": "scheming"
+      },
+      {
+        "id": "tars",
+        "name": "TARS",
+        "role": "comic relief",
+        "type": "robot",
+        "visual_description": "A blocky robot with multiple manipulator arms.",
+        "dialogue": [],
+        "mood": "witty"
+      },
+      {
+        "id": "case",
+        "name": "CASE",
+        "role": "engineer",
+        "type": "robot",
+        "visual_description": "A compact robot with advanced technological features.",
+        "dialogue": [],
+        "mood": "stoic"
       }
     ]
   },
@@ -88,56 +97,51 @@
     "scenes": [
       {
         "id": 1,
-        "title": "The Dust Bowl Earth",
-        "setting": "Dust Bowl Earth, a barren landscape plagued by dust storms and failing crops, with the remnants of NASA hidden underground.",
+        "title": "Launch of the Endurance",
+        "setting": "NASA Headquarters",
         "characters": [
-          "Joseph 'Cooper'",
-          "Murph",
+          "Cooper",
+          "Professor Brand",
+          "Amelia Brand"
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Journey through the Wormhole",
+        "setting": "Space",
+        "characters": [
+          "Cooper",
           "TARS",
           "CASE"
         ]
       },
       {
-        "id": 2,
-        "title": "Journey to the Endurance",
-        "setting": "Spacecraft Endurance, a high-tech vessel embarking on a mission through the wormhole to explore distant planets, with Amelia Brand as the lead engineer and Professor Brand overseeing.",
-        "characters": [
-          "Joseph 'Cooper'",
-          "Amelia Brand",
-          "TARS",
-          "CASE",
-          "Professor Brand"
-        ]
-      },
-      {
         "id": 3,
-        "title": "Ocean World Exploration",
-        "setting": "Ocean world with towering waves and hidden dangers, where the team encounters time dilation effects and hostile underwater creatures.",
+        "title": "Exploring Miller\u2019s Water World",
+        "setting": "Miller's Planet",
         "characters": [
-          "Joseph 'Cooper'",
+          "Cooper",
           "Amelia Brand",
           "TARS"
         ]
       },
       {
         "id": 4,
-        "title": "Tesseract Encounter",
-        "setting": "A mind-bending tesseract-inspired sequence where Cooper navigates a multidimensional space to communicate with Murph across time and space.",
+        "title": "Confronting Dr. Mann",
+        "setting": "Mann's Ice Planet",
         "characters": [
-          "Joseph 'Cooper'",
-          "Murph"
+          "Cooper",
+          "Dr. Mann",
+          "CASE"
         ]
       },
       {
         "id": 5,
-        "title": "Final Showdown near Gargantua",
-        "setting": "Near Gargantua, a massive black hole, where Cooper faces off against the ultimate antagonist forces of time, isolation, and cosmic events to secure humanity's future.",
+        "title": "The Tesseract Sequence",
+        "setting": "Fifth Dimension",
         "characters": [
-          "Joseph 'Cooper'",
-          "Amelia Brand",
-          "TARS",
-          "CASE",
-          "Professor Brand"
+          "Cooper",
+          "Murph"
         ]
       }
     ]
@@ -145,58 +149,91 @@
   "skill_tree": {
     "skill_tree": [
       {
-        "branch": "Pilot Skills",
+        "branch": "Navigator Pilot Skills",
         "skills": [
           {
-            "name": "Advanced Navigation",
-            "effect": "Ability to plot complex courses through wormholes and celestial bodies.",
+            "name": "Gravity Manipulation",
+            "effect": "Allows Cooper to manipulate gravity for navigation and puzzle-solving.",
+            "requirements": []
+          },
+          {
+            "name": "Wormhole Navigation",
+            "effect": "Enhances Cooper's ability to navigate through the wormhole for faster travel.",
+            "requirements": []
+          },
+          {
+            "name": "Time-Space Distortion Awareness",
+            "effect": "Increases Cooper's awareness of time-space distortions for better decision-making.",
+            "requirements": []
+          }
+        ]
+      },
+      {
+        "branch": "Space Exploration Skills",
+        "skills": [
+          {
+            "name": "Planetary Survival",
+            "effect": "Improves Cooper's survival skills on different planets with varying environments.",
+            "requirements": []
+          },
+          {
+            "name": "Alien Communication",
+            "effect": "Allows Cooper to communicate with alien life forms for information and assistance.",
             "requirements": [
-              "Basic Navigation"
+              "Gravity Watch"
             ]
           },
           {
-            "name": "EVA Proficiency",
-            "effect": "Skilled in extravehicular activities for spacewalks and surface exploration.",
+            "name": "Time Dilation Mastery",
+            "effect": "Masters the use of time dilation for strategic advantage in combat and exploration.",
             "requirements": [
-              "Basic EVA Training"
+              "Gravity Manipulation"
             ]
           }
         ]
       },
       {
-        "branch": "Scientific Skills",
+        "branch": "Robot Alliance Skills",
         "skills": [
           {
-            "name": "Relativity Understanding",
-            "effect": "Grasp of time dilation concepts for strategic decision-making.",
-            "requirements": [
-              "Physics Knowledge"
-            ]
+            "name": "Robotic Assistance",
+            "effect": "Utilizes TARS and CASE robots for combat support and problem-solving.",
+            "requirements": []
           },
           {
-            "name": "Quantum Communication",
-            "effect": "Ability to interact with multidimensional entities for information exchange.",
+            "name": "Robot Upgrades",
+            "effect": "Enhances the capabilities of TARS and CASE robots for improved performance.",
+            "requirements": []
+          },
+          {
+            "name": "Robot Teamwork",
+            "effect": "Enhances coordination between Cooper and the robots for seamless teamwork.",
             "requirements": [
-              "Quantum Physics Study"
+              "Robotic Assistance"
             ]
           }
         ]
       },
       {
-        "branch": "Survival Skills",
+        "branch": "Dimensional Communication Skills",
         "skills": [
           {
-            "name": "Resource Management",
-            "effect": "Efficient use of limited supplies and energy for extended missions.",
+            "name": "Gravity Interaction",
+            "effect": "Utilizes gravity interaction for communication and problem-solving in different dimensions.",
+            "requirements": []
+          },
+          {
+            "name": "Temporal Insights",
+            "effect": "Gains insights into the nature of time for strategic decision-making.",
             "requirements": [
-              "Basic Survival Skills"
+              "Gravity Interaction"
             ]
           },
           {
-            "name": "Adaptability",
-            "effect": "Quick adjustment to changing environments and unforeseen challenges.",
+            "name": "Dimensional Connection",
+            "effect": "Establishes a strong connection across dimensions for effective communication and problem-solving.",
             "requirements": [
-              "Resilience Training"
+              "Temporal Insights"
             ]
           }
         ]
@@ -206,30 +243,30 @@
   "weapons": {
     "weapons": [
       {
-        "id": "plasma-blaster",
-        "name": "Plasma Blaster",
-        "description": "A high-tech energy weapon that fires powerful plasma bolts, capable of disintegrating enemy targets.",
-        "damage": 10,
+        "id": "gravity-gauntlet",
+        "name": "Gravity Gauntlet",
+        "description": "A high-tech gauntlet that allows the user to manipulate gravity in a limited area. Can be used to create gravitational traps or repel enemies.",
+        "damage": 20,
         "requirements": [
-          "Advanced Navigation"
+          "Gravity Manipulation"
         ]
       },
       {
-        "id": "gravity-spear",
-        "name": "Gravity Spear",
-        "description": "A weapon that manipulates gravity fields to impale and crush foes with immense force.",
-        "damage": 12,
+        "id": "wormhole-blade",
+        "name": "Wormhole Blade",
+        "description": "A futuristic sword infused with wormhole energy, capable of slicing through space-time rifts. Can be used for quick traversal or combat.",
+        "damage": 25,
         "requirements": [
-          "Relativity Understanding"
+          "Wormhole Navigation"
         ]
       },
       {
-        "id": "chrono-blade",
-        "name": "Chrono Blade",
-        "description": "A blade infused with time-manipulating technology, allowing for quick strikes and dodges.",
-        "damage": 8,
+        "id": "time-dilation-bow",
+        "name": "Time Dilation Bow",
+        "description": "A bow that harnesses the power of time dilation to slow down or speed up time for the target. Ideal for precise strikes and control over combat situations.",
+        "damage": 30,
         "requirements": [
-          "Quantum Communication"
+          "Time Dilation Mastery"
         ]
       }
     ]
@@ -238,58 +275,58 @@
     "cutscenes": [
       {
         "id": 1,
-        "title": "Dust Storm Survival",
-        "description": "Cooper and his companions face a perilous dust storm on the Dust Bowl Earth, testing their survival skills and teamwork.",
+        "title": "The Gravity Equation",
+        "description": "Cooper communicates with Murph through the fifth-dimensional tesseract, guiding her to solve the gravity equation to save humanity.",
         "dialogue": [
           {
-            "speaker": "Joseph 'Cooper'",
-            "line": "Hold on tight, we need to make it to the shelter!"
-          },
-          {
-            "speaker": "TARS",
-            "line": "Calculating optimal route to safety."
+            "speaker": "Cooper",
+            "line": "Murph, listen to me carefully. You have to find the equation. It's the key to our survival."
           },
           {
             "speaker": "Murph",
-            "line": "I can't see anything, Cooper! Where are you?"
+            "line": "Dad, I don't understand. How can I do this?"
+          },
+          {
+            "speaker": "Cooper",
+            "line": "Trust in the connection we share. Look beyond time and space. You can do this, Murph."
           }
         ]
       },
       {
         "id": 2,
-        "title": "Wormhole Transit",
-        "description": "The team aboard the Endurance spaceship navigates through the mysterious wormhole, facing gravitational anomalies and unknown dangers.",
+        "title": "The Decision Point",
+        "description": "Cooper must make a critical decision at Cooper Station, choosing between staying with his family or embarking on a mission to find Amelia on Edmunds' world.",
         "dialogue": [
           {
             "speaker": "Amelia Brand",
-            "line": "Hold on, everyone! We're entering the wormhole now."
+            "line": "Cooper, we need to go after Edmunds. He might be the key to our future."
           },
           {
-            "speaker": "CASE",
-            "line": "Initiating gravitational field analysis."
+            "speaker": "Cooper",
+            "line": "But what about my family? I promised them I'd come back."
           },
           {
-            "speaker": "Professor Brand",
-            "line": "Steady as she goes, Cooper. This is where things get interesting."
+            "speaker": "TARS",
+            "line": "Cooper, sometimes survival means making sacrifices. Trust in your instincts."
           }
         ]
       },
       {
         "id": 3,
-        "title": "Confronting the Cosmic Entity",
-        "description": "Cooper faces a surreal and mind-bending encounter with a cosmic entity near Gargantua, testing his understanding of relativity and quantum communication.",
+        "title": "The Journey Ahead",
+        "description": "Cooper sets course for Edmunds' potentially habitable world, facing unknown dangers and challenges in the vastness of space.",
         "dialogue": [
           {
-            "speaker": "Cosmic Entity",
-            "line": "You have come far, Joseph 'Cooper.' But do you truly understand the nature of time?"
+            "speaker": "Cooper",
+            "line": "We're heading towards a new beginning. Whatever lies ahead, we'll face it together."
           },
           {
-            "speaker": "Joseph 'Cooper'",
-            "line": "I may not fully grasp it, but I'm willing to learn."
+            "speaker": "CASE",
+            "line": "Acknowledged. Ready to assist in navigation and exploration."
           },
           {
-            "speaker": "TARS",
-            "line": "Be cautious, Cooper. We don't know what we're dealing with here."
+            "speaker": "Amelia Brand",
+            "line": "I believe Edmunds holds the key to our destiny. We must find him."
           }
         ]
       }

@@ -18,19 +18,19 @@ async def main():
     # Test different scene types
     test_cases = [
         {
-            "prompt": "A cozy tavern with wooden tables and a fireplace",
-            "scene_type": "room"
+            "prompt": "The Space Ship control room with space to move around from the movie Interstellar, make it look really nice.",
+            "scene_type": "futuristic_room"
         },
         {
             "prompt": "A mystical forest with ancient trees and glowing mushrooms",
             "scene_type": "nature"
         },
         {
-            "prompt": "A grand palace corridor with marble floors and golden chandeliers",
+            "prompt": "A grand palace corridor with marble floors and golden chandeliers, similar to the one from the movie Frozen. Make it look really nice.",
             "scene_type": "halls"
         },
         {
-            "prompt": "A bustling Arabian marketplace with colorful tents and merchants",
+            "prompt": "A bustling Arabian marketplace with colorful tents and merchants, similar to the one from the movie Aladdin. Make it look really nice. DO NOT HAVE ANY CHARACTERS IN THE BACKGROUND.",
             "scene_type": "market"
         },
         {
@@ -48,7 +48,7 @@ async def main():
                 test_case['prompt'], 
                 test_case['scene_type']
             )
-            print(f"Result: {result}")
+            print(f"Result: {result.replace('✅', 'SUCCESS:').replace('❌', 'ERROR:')}")
             
             # Check if file was created
             output_dir = Path("mcp_output/maps")

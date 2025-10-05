@@ -71,6 +71,24 @@ def _generate_image_with_gemini(prompt: str, reference_image_path: str = None, o
     
     generate_content_config = types.GenerateContentConfig(
         response_modalities=["IMAGE", "TEXT"],
+        safety_settings=[
+            types.SafetySetting(
+                category=types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                threshold=types.HarmBlockThreshold.BLOCK_NONE
+            ),
+            types.SafetySetting(
+                category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                threshold=types.HarmBlockThreshold.BLOCK_NONE
+            ),
+            types.SafetySetting(
+                category=types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                threshold=types.HarmBlockThreshold.BLOCK_NONE
+            ),
+            types.SafetySetting(
+                category=types.HarmCategory.HARM_CATEGORY_HARASSMENT,
+                threshold=types.HarmBlockThreshold.BLOCK_NONE
+            )
+        ]
     )
 
     if output_name:
@@ -179,7 +197,8 @@ class MapPipeline:
         # Reference images based on scene type
         self.ref_images = {
             "room": "room.png",      # Use existing reference
-            "nature": "market.png",    # Use existing reference
+            "futuristic_room": "futuristic_room.png",  # Use existing reference
+            "nature": "nature.png",    # Use existing reference
             "halls": "halls.png",     # Use existing reference
             "market": "market.png",    # Use existing reference
             "misc": "misc.png"       # Use existing reference
@@ -193,35 +212,47 @@ class MapPipeline:
         base_description = self.config.custom_prompt if self.config.custom_prompt else f"a {self.config.scene_type} scene"
         
         scene_prompts = {
-            "room": f"Create a pixelated indoor room background: {base_description}. "
-                   f"Design a detailed room interior with walls, floor, furniture, and architectural details. "
-                   f"Use a top-down or isometric perspective suitable for 2D games. "
-                   f"The **ENTIRE BACKGROUND MUST BE EXACTLY {self.config.background_color}** - NO TRANSPARENCY, NO OTHER COLORS. "
-                   f"Make it a **high-detail {self.config.size} pixel art style** with clear room boundaries and interior elements.",
+            "room": f"create a **High-detail pixel art** 2D top-down indoor room scene in a similar style to the reference image based on this additional context: " 
+                f"{base_description}. "
+                f"**Reference character style and color palette**."
+                f"Include detailed walls, floor, furniture, and game-ready architectural elements while making sure there is enough space for the character to move around. "
+                f"Use a clear **top-down** perspective similar to the reference image. "
+                f"Fill the entire aspect ratio. as the reference image.",
             
-            "nature": f"Create a pixelated outdoor nature background: {base_description}. "
-                     f"Design a natural landscape with terrain, vegetation, sky, and environmental features. "
-                     f"Use a top-down or isometric perspective suitable for 2D games. "
-                     f"The **ENTIRE BACKGROUND MUST BE EXACTLY {self.config.background_color}** - NO TRANSPARENCY, NO OTHER COLORS. "
-                     f"Make it a **high-detail {self.config.size} pixel art style** with natural elements and outdoor atmosphere.",
+            "futuristic_room": f"create a **High-detail pixel art** 2D top-down indoor futuristic room scene in a similar style to the reference image based on this additional context: " 
+                f"{base_description}. "
+                f"**Reference character style and color palette**."
+                f"Include detailed walls, floor, futuristic furniture, advanced technology, holographic displays, and game-ready architectural elements while making sure there is enough space for the character to move around. "
+                f"Use a clear **top-down** perspective similar to the reference image. "
+                f"Fill the entire aspect ratio. as the reference image.",
             
-            "halls": f"Create a pixelated hallway/corridor background: {base_description}. "
-                    f"Design an architectural interior with walls, floor, ceiling, doors, and corridor features. "
-                    f"Use a top-down or isometric perspective suitable for 2D games. "
-                    f"The **ENTIRE BACKGROUND MUST BE EXACTLY {self.config.background_color}** - NO TRANSPARENCY, NO OTHER COLORS. "
-                    f"Make it a **high-detail {self.config.size} pixel art style** with clear architectural structure.",
+            "nature": f"create a **High-detail pixel art** 2D **top-down** outdoor **natural landscape** background. based on this additional context: "
+                f"{base_description}. "
+                f"**Reference character style and color palette**"
+                f"Include detailed terrain, vegetation (trees, lakes, etc.), and environmental features. "
+                f"Use a clear **top-down** perspective similar to the reference image. "
+                f"Fill the entire aspect ratio. as the reference image. ",
             
-            "market": f"Create a pixelated marketplace background: {base_description}. "
+            "halls": f"create a **High-detail pixel art** 2D top-down indoor hallway/corridor scene in a similar style to the reference image based on this additional context: " 
+                    f"{base_description}. "
+                    f"**Reference character style and color palette**."
+                    f"Design an architectural interior with walls, floor, ceiling, doors, and corridor features while making sure there is enough space for the character to move around. "
+                    f"Use a clear **top-down** perspective similar to the reference image. "
+                    f"Fill the entire aspect ratio. as the reference image.",
+            
+            "market": f"create a **High-detail pixel art** 2D **top-down** outdoor marketplace background in a similar style to the reference image based on this additional context: "
+                     f"{base_description}. "
+                     f"**Reference character style and color palette**"
                      f"Design a bustling market scene with stalls, vendors, goods, and market atmosphere. "
-                     f"Use a top-down or isometric perspective suitable for 2D games. "
-                     f"The **ENTIRE BACKGROUND MUST BE EXACTLY {self.config.background_color}** - NO TRANSPARENCY, NO OTHER COLORS. "
-                     f"Make it a **high-detail {self.config.size} pixel art style** with market elements and commercial activity.",
+                     f"Use a clear **top-down** perspective similar to the reference image. "
+                     f"Fill the entire aspect ratio. as the reference image.",
             
-            "misc": f"Create a pixelated miscellaneous background: {base_description}. "
-                   f"Design a unique scene based on the custom description with appropriate environmental elements. "
-                   f"Use a top-down or isometric perspective suitable for 2D games. "
-                   f"The **ENTIRE BACKGROUND MUST BE EXACTLY {self.config.background_color}** - NO TRANSPARENCY, NO OTHER COLORS. "
-                   f"Make it a **high-detail {self.config.size} pixel art style** with creative and unique elements."
+            "misc": f"create a **High-detail pixel art** 2D top-down miscellaneous scene in a similar style to the reference image based on this additional context: " 
+                   f"{base_description}. "
+                   f"**Reference character style and color palette**."
+                   f"Design a unique scene based on the custom description with appropriate environmental elements while making sure there is enough space for the character to move around. "
+                   f"Use a clear **top-down** perspective similar to the reference image. "
+                   f"Fill the entire aspect ratio. as the reference image."
         }
         
         return scene_prompts
@@ -229,7 +260,7 @@ class MapPipeline:
     def _get_reference_path(self, ref_name: str) -> Path:
         """Get the path to a reference image - Windows compatible."""
         script_dir = Path(__file__).parent.parent.parent
-        return script_dir / "schemas" / "excharacs" / ref_name
+        return script_dir / "schemas" / "exmaps" / ref_name
     
     def _generate_image_sync(self, prompt: str, output_name: str, reference_image: Optional[str] = None) -> bool:
         """Generate a single background image with optional reference (synchronous)."""
@@ -354,7 +385,7 @@ async def generate_background_from_prompt(user_prompt: str, scene_type: str) -> 
     
     Args:
         user_prompt: Custom description for the background
-        scene_type: One of "room", "nature", "halls", "market", "misc"
+        scene_type: One of "room", "futuristic_room", "nature", "halls", "market", "misc"
     
     Returns:
         Result message with generation status
@@ -362,9 +393,9 @@ async def generate_background_from_prompt(user_prompt: str, scene_type: str) -> 
     print("=== Generating Background from Prompt ===", file=sys.stderr, flush=True)
     
     # Validate scene type
-    valid_scene_types = ["room", "nature", "halls", "market", "misc"]
+    valid_scene_types = ["room", "futuristic_room", "nature", "halls", "market", "misc"]
     if scene_type not in valid_scene_types:
-        return f"❌ Invalid scene type: {scene_type}. Must be one of: {valid_scene_types}"
+        return f"ERROR: Invalid scene type: {scene_type}. Must be one of: {valid_scene_types}"
     
     try:
         # Create config
@@ -382,12 +413,12 @@ async def generate_background_from_prompt(user_prompt: str, scene_type: str) -> 
         
         if result and len(result) > 0:
             background_file = list(result.values())[0]
-            return f"✅ Background generated successfully: {background_file}"
+            return f"SUCCESS: Background generated successfully: {background_file}"
         else:
-            return "❌ Failed to generate background - no output produced"
+            return "ERROR: Failed to generate background - no output produced"
             
     except Exception as e:
-        print(f"❌ Error generating background: {e}", file=sys.stderr, flush=True)
+        print(f"ERROR: Error generating background: {e}", file=sys.stderr, flush=True)
         import traceback
         traceback.print_exc()
-        return f"❌ Error generating background: {str(e)}"
+        return f"ERROR: Error generating background: {str(e)}"
