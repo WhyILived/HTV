@@ -13,12 +13,12 @@ PLAYER_SPEED = 250
 NPC_SIZE = (36, 48)
 PLAYER_SIZE = (36, 48)
 WORLD_BOUNDS = pygame.Rect(0, 0, 2048, 1364)  # Smaller world
-INTERACT_DISTANCE = 48
+INTERACT_DISTANCE = 64
 MINIMAP_SIZE = 150
 MINIMAP_POS = (WINDOW_WIDTH - MINIMAP_SIZE - 10, 10)
-BACKGROUND = pygame.image.load("assets/background2.png")
-BACKGROUND_COLOR_KEY = pygame.image.load("assets/background_color_key2.png")
-WALKABLE_COLOR = (234, 0, 255)
+BACKGROUND = pygame.image.load("assets/background_space.png")
+BACKGROUND_COLOR_KEY = pygame.image.load("assets/background_space_key.png")
+WALKABLE_COLOR = (234, 0, 249)
 CURRENT_DIALOGUE = ""
 DIALOGUE_TIMER = 0.0
 DIALOGUE_QUEUE = []
@@ -62,7 +62,7 @@ def is_position_walkable(pos: Tuple[int, int], color_key_surface, walkable_color
     if 0 <= x < color_key_surface.get_width() and 0 <= y < color_key_surface.get_height():
         pixel_color = color_key_surface.get_at((x, y))
         # Compare RGB values (ignore alpha)
-        return pixel_color[:3] != walkable_color
+        return pixel_color[:3] == walkable_color
     return False
 
 def load_storyline(filename="storyline.json") -> Dict[str, Any]:
