@@ -458,7 +458,7 @@ async def generate_sprites_from_storyline(storyline_file: str = "storyline.json"
     except Exception as e:
         return f"❌ Error loading {storyline_file}: {e}"
     
-    # Extract characters (same logic as test script)
+    # Extract characters from new JSON structure
     characters = []
     
     # Add main character
@@ -471,7 +471,7 @@ async def generate_sprites_from_storyline(storyline_file: str = "storyline.json"
             
         characters.append({
             "name": main_char.get("name", "MainCharacter"),
-            "description": main_char.get("visual_description", main_char.get("description", "Main character")),
+            "description": main_char.get("visual_description", "Main character"),
             "character_type": main_char.get("type", "male")
         })
     
@@ -479,22 +479,16 @@ async def generate_sprites_from_storyline(storyline_file: str = "storyline.json"
     if "characters" in storyline_data:
         chars_data = storyline_data["characters"]
         if isinstance(chars_data, dict) and "characters" in chars_data:
-            chars_list = chars_data["characters"]
-            if isinstance(chars_list, dict) and "items" in chars_list:
-                chars_array = chars_list["items"]
-            else:
-                chars_array = chars_list
+            chars_array = chars_data["characters"]
         else:
             chars_array = chars_data
         
         if isinstance(chars_array, list):
             for char in chars_array:
-                char_type = char.get("type", "male")
-                visual_desc = char.get("visual_description", char.get("description", "Character"))
                 characters.append({
                     "name": char.get("name", "Character"),
-                    "description": visual_desc,
-                    "character_type": char_type
+                    "description": char.get("visual_description", "Character"),
+                    "character_type": char.get("type", "male")
                 })
     
     print(f"Found {len(characters)} characters for concurrent generation", file=sys.stderr, flush=True)
