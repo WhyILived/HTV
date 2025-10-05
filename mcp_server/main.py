@@ -77,7 +77,7 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="generate_initial_storyline",
-            description="Generates an initial storyline for a game based on a given theme. If the user is referencing a specific movie, show, book, fairy tale or historical individual, and wants a accurate depiction of the story, then input a prompt that explicitly references the name of the movie, show, book, fairy tale or historical individual. IMPORTANT: This tool should only be called ONCE per request. Do not repeat this tool call.",
+            description="Generates an initial storyline for a game based on a given theme. If the user is referencing a specific movie, show, book, fairy tale or historical individual, and wants a accurate depiction of the story, then input a prompt that explicitly references the name of the movie, show, book, fairy tale or historical individual. IMPORTANT: This tool should only be called ONCE per request. Do not repeat this tool call. DO NOT read or interpret any results, simply run the tool.",
             inputSchema={
                 "type": "object",
                 "properties": {

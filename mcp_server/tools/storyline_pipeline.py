@@ -330,13 +330,13 @@ async def generate_initial_storyline(prompt: str, ctx: Optional[Any] = None) -> 
     context.append(cutscenes)
 
     storyline = {
-        game,
-        main_character,
-        characters,
-        scenes,
-        skill_tree,
-        weapons,
-        cutscenes,
+        "game": game,
+        "main_character": main_character,
+        "characters": characters,
+        "scenes": scenes,
+        "skill_tree": skill_tree,
+        "weapons": weapons,
+        "cutscenes": cutscenes,
     }
 
     if ctx:
