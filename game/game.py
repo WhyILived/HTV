@@ -237,8 +237,6 @@ def handle_interaction_choice(choice, player, npc):
     return "Invalid choice"
 
 def check_scene_triggers(player: Player, scenes: List[Dict[str,Any]]) -> Optional[Dict[str,Any]]:
-    if player.rect.centerx > WORLD_BOUNDS.width - 300:
-        return scenes[0] if scenes else None
     return None
 
 def get_characters_for_scene(scene, all_characters):
@@ -451,8 +449,8 @@ def run_game(storyline):
     showing_interaction_menu = False
     current_interaction_npc = None
     current_scene_index = 0
-    show_scene_intro = False
-    scene_intro_timer = 0
+    show_scene_intro = True
+    scene_intro_timer = 150
     scene_intro_can_skip = False
     running = True
 
