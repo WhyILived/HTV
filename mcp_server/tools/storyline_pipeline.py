@@ -1,5 +1,6 @@
 from typing import Optional, Dict, Any, List
 import json
+from pathlib import Path
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -360,10 +361,16 @@ async def build_storyline_pipeline(prompt: str, ctx: Optional[Any] = None, outpu
     
     json_string = json.dumps(storyline, indent=2)
     
-    with open(output_file, "w", encoding="utf-8") as f:
+    # Always write to project root so users can easily find the file
+    project_root = Path(__file__).resolve().parents[2]
+    output_path = (project_root / output_file).resolve()
+    with open(output_path, "w", encoding="utf-8") as f:
         f.write(json_string)
 
     if ctx:
         ctx.log("Storyline pipeline complete.")
 
-    return storyline
+    return {
+        "storyline": storyline,
+        "output_path": str(output_path)
+    }

@@ -171,7 +171,9 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
         try:
             prompt = arguments.get("prompt")
             result = await build_storyline_pipeline(prompt)
-            return [TextContent(type="text", text="Initial storyline generated and saved to storyline.json")]
+            # result now includes output_path
+            output_path = result.get("output_path", "storyline.json") if isinstance(result, dict) else "storyline.json"
+            return [TextContent(type="text", text=f"Initial storyline generated and saved to: {output_path}")]
         except Exception as e:
             return [TextContent(type="text", text=f"Error generating storyline: {str(e)}")]
     
