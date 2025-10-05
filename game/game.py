@@ -8,16 +8,19 @@ from typing import Dict, List, Any, Optional, Tuple
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 500
 FPS = 30
-PLAYER_SPEED = 180
+PLAYER_SPEED = 250
 NPC_SIZE = (36, 48)
 PLAYER_SIZE = (36, 48)
-WORLD_BOUNDS = pygame.Rect(0, 0, 1000, 600)  # Smaller world
+WORLD_BOUNDS = pygame.Rect(0, 0, 1000, 700)  # Smaller world
 INTERACT_DISTANCE = 48
 MINIMAP_SIZE = 150
 MINIMAP_POS = (WINDOW_WIDTH - MINIMAP_SIZE - 10, 10)
-BACKGROUND = pygame.image.load("assets/background.png")
-BACKGROUND_COLOR_KEY = pygame.image.load("assets/background_color_key.png")
-WALKABLE_COLOR = (229, 120, 160)
+BACKGROUND = pygame.image.load("assets/background2.png")
+BACKGROUND_COLOR_KEY = pygame.image.load("assets/background_color_key2.png")
+WALKABLE_COLOR = (234, 0, 255)
+CURRENT_DIALOGUE = ""
+DIALOGUE_TIMER = 0.0
+DIALOGUE_QUEUE = []
 
 WHITE = (255, 255, 255)
 BLUE = (100, 150, 255)
@@ -46,7 +49,7 @@ def is_position_walkable(pos: Tuple[int, int], color_key_surface, walkable_color
     if 0 <= x < color_key_surface.get_width() and 0 <= y < color_key_surface.get_height():
         pixel_color = color_key_surface.get_at((x, y))
         # Compare RGB values (ignore alpha)
-        return pixel_color[:3] == walkable_color
+        return pixel_color[:3] != walkable_color
     return False
 
 def load_storyline(filename="storyline.json") -> Dict[str, Any]:
@@ -75,7 +78,8 @@ class Entity:
 class Player(Entity):
     def __init__(self, data: Dict[str, Any], pos: Tuple[int,int]):
         w,h = PLAYER_SIZE
-        super().__init__(data.get("name","Player"), pygame.Rect(pos[0], pos[1], w,h), BLUE)
+        print("PLAYER NAME:", data)
+        super().__init__(data.get("main_character").get("name", "Player"), pygame.Rect(pos[0], pos[1], w,h), BLUE)
         self.speed = PLAYER_SPEED
     def update(self, dt, obstacles, color_key_surface=None):
         keys = pygame.key.get_pressed()
@@ -165,17 +169,53 @@ def show_interaction_menu(screen, font, npc_name, npc_role):
         screen.blit(option_text, (menu_rect.x + 20, y_pos))
         screen.blit(desc_text, (menu_rect.x + 150, y_pos))
 
+def update_dialogue(dt):
+    """Updates the dialogue timer and moves to next line when time expires."""
+    global CURRENT_DIALOGUE, DIALOGUE_TIMER, DIALOGUE_QUEUE
+
+    if DIALOGUE_TIMER > 0:
+        DIALOGUE_TIMER -= dt
+    elif DIALOGUE_QUEUE:
+        CURRENT_DIALOGUE, DIALOGUE_TIMER = DIALOGUE_QUEUE.pop(0)
+    else:
+        CURRENT_DIALOGUE = ""
+
+def display_text(dialogue, seconds=3):
+    """
+    Displays dialogue lines one after another.
+    - If given a list, cycles through them.
+    - Each line lasts 'seconds' unless a tuple (line, custom_seconds) is given.
+    """
+    global DIALOGUE_QUEUE, CURRENT_DIALOGUE, DIALOGUE_TIMER
+
+    DIALOGUE_QUEUE = []  # reset queue
+
+    # Normalize input
+    if isinstance(dialogue, str):
+        DIALOGUE_QUEUE.append((dialogue, seconds))
+    elif isinstance(dialogue, list):
+        for item in dialogue:
+            if isinstance(item, tuple):
+                DIALOGUE_QUEUE.append(item)
+            else:
+                DIALOGUE_QUEUE.append((str(item), seconds))
+    else:
+        DIALOGUE_QUEUE.append((str(dialogue), seconds))
+
+    # Start with the first line
+    if DIALOGUE_QUEUE:
+        CURRENT_DIALOGUE, DIALOGUE_TIMER = DIALOGUE_QUEUE.pop(0)
+
 def handle_interaction_choice(choice, player, npc):
     """Handle the player's interaction choice"""
     name = npc.data.get("name", npc.name)
     role = npc.data.get("role", "Unknown")
+    print(npc.data)
+    dialogue = npc.data.get("dialogue", "Unknown")
+    print(dialogue)
     
     if choice == 1:  # Talk
-        print(f"[TALK] {player.name} tries to talk to {name}")
-        if "antagonist" in role.lower() or "enemy" in role.lower():
-            print(f"[TALK] {name} glares menacingly: 'You dare speak to me?'")
-        else:
-            print(f"[TALK] {name} responds: 'Hello there! How can I help you?'")
+        display_text(dialogue, 3)
         return f"Talked to {name}"
         
     elif choice == 2:  # Fight
@@ -202,27 +242,28 @@ def check_scene_triggers(player: Player, scenes: List[Dict[str,Any]]) -> Optiona
     return None
 
 def get_characters_for_scene(scene, all_characters):
-    """Get character data for a specific scene based on character IDs"""
+    """Get character data for a specific scene based on character names"""
     scene_characters = []
     if not scene or "characters" not in scene:
         print(f"[DEBUG] No scene or no characters in scene: {scene}")
         return scene_characters
     
-    print(f"[DEBUG] Scene has {len(scene.get('characters', []))} character IDs: {scene.get('characters', [])}")
-    print(f"[DEBUG] Available characters: {[c.get('id', 'no-id') for c in all_characters]}")
+    print(f"[DEBUG] Scene has {len(scene.get('characters', []))} character Names: {scene.get('characters', [])}")
+    print(f"[DEBUG] Available characters: {[c.get('name', 'no-name') for c in all_characters]}")
     
     # Create a lookup dictionary for all characters
     char_lookup = {}
     for char in all_characters:
-        char_lookup[char.get("id", "")] = char
+        print("CHAR: ", char)
+        char_lookup[char.get("name", "")] = char
     
     # Get characters for this scene
-    for char_id in scene.get("characters", []):
-        if char_id in char_lookup:
-            scene_characters.append(char_lookup[char_id])
-            print(f"[DEBUG] Found character: {char_id}")
+    for char_name in scene.get("characters", []):
+        if char_name in char_lookup:
+            scene_characters.append(char_lookup[char_name])
+            print(f"[DEBUG] Found character: {char_name}")
         else:
-            print(f"[DEBUG] Character not found: {char_id}")
+            print(f"[DEBUG] Character not found: {char_name}")
     
     return scene_characters
 
@@ -253,9 +294,9 @@ def draw_scene_intro(screen, scene, timer):
         return
     
     # # Semi-transparent overlay
-    # overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
-    # overlay.fill((0, 0, 0, 150))
-    # screen.blit(overlay, (0, 0))
+    overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 150))
+    screen.blit(overlay, (0, 0))
     
     # Scene title
     title_font = pygame.font.SysFont(None, 48)
@@ -286,10 +327,14 @@ def find_safe_spawn_position(obstacles, player_rect, min_distance=100):
         safe = True
         if test_rect.colliderect(player_rect.inflate(min_distance, min_distance)):
             safe = False
-        for obstacle in obstacles:
-            if test_rect.colliderect(obstacle):
+        
+        if 0 <= x < BACKGROUND_COLOR_KEY.get_width() and 0 <= y < BACKGROUND_COLOR_KEY.get_height():
+            pixel_color = BACKGROUND_COLOR_KEY.get_at((x, y))
+            # Compare RGB values (ignore alpha)
+            if pixel_color[:3] != WALKABLE_COLOR:
+                safe = True
+            else:
                 safe = False
-                break
         
         if safe:
             return (x, y)
@@ -360,17 +405,17 @@ def run_game(storyline):
     all_chars_section = storyline.get("characters",{})
     all_chars = []
     if isinstance(all_chars_section, dict):
-        if "characters" in all_chars_section: all_chars_section = all_chars_section["characters"]
-        if "items" in all_chars_section: all_chars = all_chars_section["items"]
-    if not all_chars: all_chars = SAMPLE_DATA["characters"]["items"]
+        all_chars_section = all_chars_section["characters"]
+    if not all_chars: all_chars = all_chars_section
+    print("ALL CHARS", all_chars)
 
     # Scenes
     scenes_section = storyline.get("scenes",{})
     scenes = []
     if isinstance(scenes_section, dict):
-        if "items" in scenes_section: scenes = scenes_section["items"]
-        elif "scenes" in scenes_section and "items" in scenes_section["scenes"]:
-            scenes = scenes_section["scenes"]["items"]
+        print("YES")
+        scenes = scenes_section["scenes"]
+        print(scenes)
     if not scenes: 
         print("[DEBUG] Using SAMPLE_DATA scenes")
         scenes = SAMPLE_DATA["scenes"]["items"]
@@ -408,6 +453,7 @@ def run_game(storyline):
     current_scene_index = 0
     show_scene_intro = False
     scene_intro_timer = 0
+    scene_intro_can_skip = False
     running = True
 
     while running:
@@ -474,19 +520,23 @@ def run_game(storyline):
                         showing_interaction_menu = False
                         current_interaction_npc = None
                 
-                if show_scene_intro:
+                if show_scene_intro and scene_intro_can_skip:
                     # Skip scene intro with any key
                     show_scene_intro = False
                     scene_intro_timer = 0
+                    scene_intro_can_skip = False
 
         # Update
         player.update(dt, obstacles, BACKGROUND_COLOR_KEY)
+        update_dialogue(dt)
         
         # Update scene intro timer
         if show_scene_intro and scene_intro_timer > 0:
             scene_intro_timer -= 1
             if scene_intro_timer <= 0:
                 show_scene_intro = False
+            elif scene_intro_timer < 170:
+                scene_intro_can_skip = True
 
         # Scene triggers (legacy - keeping for compatibility)
         if scene_active is None:
@@ -533,7 +583,37 @@ def run_game(storyline):
             screen.blit(font.render("Press any key to continue...",True,WHITE),(8,70))
         else:
             screen.blit(font.render("Move: WASD/Arrows, Interact: E, Scenes: N/B, Quit: ESC",True,WHITE),(8,70))
-        
+
+        # Draw active dialogue text (from display_text)
+        global CURRENT_DIALOGUE, DIALOGUE_TIMER
+        if DIALOGUE_TIMER > 0 and CURRENT_DIALOGUE:
+            box_rect = pygame.Rect(60, WINDOW_HEIGHT - 120, WINDOW_WIDTH - 120, 80)
+            s = pygame.Surface((box_rect.w, box_rect.h), pygame.SRCALPHA)
+            s.fill((10, 10, 20, 220))
+            screen.blit(s, (box_rect.x, box_rect.y))
+
+            # Word wrap (so long lines break correctly)
+            words = CURRENT_DIALOGUE.split()
+            lines = []
+            line = ""
+            for w in words:
+                test = (line + " " + w).strip()
+                if len(test) * 10 > box_rect.w - 20:
+                    lines.append(line)
+                    line = w
+                else:
+                    line = test
+            if line:
+                lines.append(line)
+
+            for i, l in enumerate(lines[:4]):
+                screen.blit(font.render(l, True, WHITE), (box_rect.x + 10, box_rect.y + 10 + i * 20))
+
+            DIALOGUE_TIMER -= dt
+        else:
+            CURRENT_DIALOGUE = ""
+
+                
         # Draw minimap
         draw_minimap(screen, player, npcs, obstacles, cam)
         
@@ -549,7 +629,7 @@ def run_game(storyline):
 
         # Interaction box
         if interaction_timer>0 and interaction_text:
-            box_rect = pygame.Rect(60,WINDOW_HEIGHT-100,WINDOW_WIDTH-120,80)
+            box_rect = pygame.Rect(60,50,WINDOW_WIDTH-120,60)
             s = pygame.Surface((box_rect.w,box_rect.h),pygame.SRCALPHA)
             s.fill((10,10,20,220))
             screen.blit(s,(box_rect.x,box_rect.y))

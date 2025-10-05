@@ -1,0 +1,292 @@
+{
+  "game": {
+    "game": {
+      "title": "Interstellar: Pixel Odyssey",
+      "genre": "Adventure, Sci-Fi",
+      "summary": "Embark on a pixelated journey through space and time to save humanity. Explore distant planets, solve puzzles, and navigate the complexities of love, survival, and sacrifice.",
+      "world_setting": "The pixelated world of Interstellar: Pixel Odyssey captures the essence of the movie in a 2D format. Players will visit Earth in a state of decay, traverse the vastness of space to reach the wormhole near Saturn, and land on Miller's planet and Mann's planet. The haunting beauty of Gargantua and the mind-bending tesseract provide a backdrop for the player's journey through themes of time dilation, love, and the ultimate quest for survival."
+    }
+  },
+  "main_character": {
+    "main_character": {
+      "name": "Cooper",
+      "type": "male",
+      "visual_description": "Wearing a worn astronaut suit with earth-toned colors and a helmet adorned with scratches from space travel.",
+      "class": "Space Explorer",
+      "level": 5,
+      "stats": {
+        "strength": 8,
+        "dexterity": 7,
+        "intelligence": 8,
+        "charisma": 6,
+        "luck": 6
+      },
+      "inventory": {
+        "weapons": [
+          "Laser Blaster"
+        ],
+        "armor": [
+          "Space Suit"
+        ],
+        "accessories": [
+          "Astrocompass"
+        ]
+      }
+    }
+  },
+  "characters": {
+    "characters": [
+      {
+        "name": "Dr. Amelia Brand",
+        "role": "mentor",
+        "type": "female",
+        "visual_description": "Wearing a sleek white spacesuit with a high-tech helmet.",
+        "dialogue": ["Hi! How are you?!", "I'm good...", "I'm here to help. Make sure to stop by!", "Okay. Will do."],
+        "mood": "optimistic"
+      },
+      {
+        "name": "CASE",
+        "role": "engineer",
+        "type": "robot",
+        "visual_description": "A robotic assistant with various mechanical arms for repairs.",
+        "dialogue": ["Hi! How are you?!", "I'm good...", "I'm here to help. Make sure to stop by!", "Okay. Will do."],
+        "mood": "loyal"
+      },
+      {
+        "name": "Dr. Mann",
+        "role": "antagonist",
+        "type": "male",
+        "visual_description": "A deceptive figure in a rugged astronaut suit with a sly expression.",
+        "dialogue": ["What are you doing here?", "Oh, nothing much!", "Get out.", "Okay..."],
+        "mood": "scheming"
+      },
+      {
+        "name": "TARS",
+        "role": "comic relief",
+        "type": "robot",
+        "visual_description": "A quirky robot with a blocky design and a humorous personality.",
+        "dialogue": ["Hello, there.", "Hi, TARS!", "I am working, please excuse me.", "Sure!"],
+        "mood": "witty"
+      },
+      {
+        "name": "Murph",
+        "role": "quest-giver",
+        "type": "female",
+        "visual_description": "A determined young girl in tattered Earth clothes, holding a cryptic message.",
+        "dialogue": ["Hey!", "Hey, Murph!", "Whatcha doing?", "Oh, nothing much!"],
+        "mood": "brave"
+      }
+    ]
+  },
+  "scenes": {
+    "scenes": [
+      {
+        "id": 1,
+        "title": "Earth's Last Stand",
+        "setting": "Decaying Earth",
+        "characters": [
+          "Cooper",
+          "Murph"
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Journey to the Wormhole",
+        "setting": "Space near Saturn",
+        "characters": [
+          "Cooper",
+          "Dr. Amelia Brand",
+          "TARS"
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Miller's Planet Dilemma",
+        "setting": "Miller's planet",
+        "characters": [
+          "Cooper",
+          "Dr. Amelia Brand",
+          "CASE"
+        ]
+      },
+      {
+        "id": 4,
+        "title": "The Betrayal on Mann's Planet",
+        "setting": "Mann's planet",
+        "characters": [
+          "Cooper",
+          "Dr. Mann",
+          "TARS"
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Tesseract Revelation",
+        "setting": "Inside the tesseract",
+        "characters": [
+          "Cooper",
+          "Murph"
+        ]
+      }
+    ]
+  },
+  "skill_tree": {
+    "skill_tree": [
+      {
+        "branch": "Pilot",
+        "skills": [
+          {
+            "name": "Zero-G Maneuvering",
+            "effect": "Allows the player to navigate space obstacles with precision.",
+            "requirements": [
+              "Basic Space Navigation"
+            ]
+          },
+          {
+            "name": "Emergency Landing",
+            "effect": "Enables the player to make a safe landing in critical situations.",
+            "requirements": [
+              "Zero-G Maneuvering"
+            ]
+          }
+        ]
+      },
+      {
+        "branch": "Scientist",
+        "skills": [
+          {
+            "name": "Planetary Analysis",
+            "effect": "Provides insights into the unique characteristics of each planet.",
+            "requirements": []
+          },
+          {
+            "name": "Time Dilation Awareness",
+            "effect": "Allows the player to understand and utilize time dilation for strategic advantages.",
+            "requirements": [
+              "Planetary Analysis"
+            ]
+          }
+        ]
+      },
+      {
+        "branch": "Engineer",
+        "skills": [
+          {
+            "name": "Mechanical Repair",
+            "effect": "Enables the player to fix damaged equipment and ships.",
+            "requirements": []
+          },
+          {
+            "name": "Robotic Assistance",
+            "effect": "Summons a robotic assistant for additional support during missions.",
+            "requirements": [
+              "Mechanical Repair"
+            ]
+          }
+        ]
+      },
+      {
+        "branch": "Survivalist",
+        "skills": [
+          {
+            "name": "Resource Scavenging",
+            "effect": "Allows the player to find valuable resources in harsh environments.",
+            "requirements": []
+          },
+          {
+            "name": "Advanced First Aid",
+            "effect": "Enhances the player's ability to heal injuries and survive dangerous situations.",
+            "requirements": [
+              "Resource Scavenging"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "weapons": {
+    "weapons": [
+      {
+        "name": "Plasma Rifle",
+        "description": "A high-tech energy weapon that emits powerful plasma bolts, capable of melting through enemy armor.",
+        "damage": 20,
+        "requirements": [
+          "Engineer"
+        ]
+      },
+      {
+        "name": "Gravity Hammer",
+        "description": "A massive weapon that harnesses gravitational forces to crush enemies with immense force.",
+        "damage": 30,
+        "requirements": [
+          "Survivalist"
+        ]
+      },
+      {
+        "name": "Temporal Disruptor",
+        "description": "A device that manipulates time waves to create temporal disruptions, slowing down or freezing enemies in their tracks.",
+        "damage": 15,
+        "requirements": [
+          "Scientist"
+        ]
+      },
+      {
+        "name": "Nanotech Blade",
+        "description": "A blade infused with nanotechnology that can self-repair and adapt to different combat scenarios, dealing precise cuts and strikes.",
+        "damage": 25,
+        "requirements": [
+          "Pilot"
+        ]
+      }
+    ]
+  },
+  "cutscenes": {
+    "cutscenes": [
+      {
+        "id": 1,
+        "title": "Earth's Last Stand",
+        "description": "Cooper and Murph witness the worsening conditions on Earth as they struggle to find a solution to save humanity.",
+        "dialogue": [
+          {
+            "speaker": "Cooper",
+            "line": "We can't give up, Murph. There has to be a way to save us all."
+          },
+          {
+            "speaker": "Murph",
+            "line": "I believe in you, Dad. We'll find a way together."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Journey to the Wormhole",
+        "description": "Cooper, Dr. Amelia Brand, and TARS embark on a daring journey through space to reach the wormhole near Saturn.",
+        "dialogue": [
+          {
+            "speaker": "Dr. Amelia Brand",
+            "line": "The fate of humanity rests on this mission. We must not fail."
+          },
+          {
+            "speaker": "TARS",
+            "line": "Calculating optimal trajectory for wormhole entry. Hold on tight, Cooper."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Miller's Planet Dilemma",
+        "description": "Cooper, Dr. Amelia Brand, and CASE face the time dilation challenge on Miller's planet while searching for a solution.",
+        "dialogue": [
+          {
+            "speaker": "Cooper",
+            "line": "Time is not on our side here. We need to make every moment count."
+          },
+          {
+            "speaker": "CASE",
+            "line": "Analyzing the effects of time dilation on our mission parameters. We must adapt quickly."
+          }
+        ]
+      }
+    ]
+  }
+}
