@@ -44,9 +44,12 @@ async def main():
         print(f"Prompt: {test_case['prompt']}")
         
         try:
+            # Use custom naming for better organization
+            custom_name = f"test_{i}_{test_case['scene_type']}"
             result = await generate_background_from_prompt(
                 test_case['prompt'], 
-                test_case['scene_type']
+                test_case['scene_type'],
+                custom_name
             )
             print(f"Result: {result.replace('✅', 'SUCCESS:').replace('❌', 'ERROR:')}")
             

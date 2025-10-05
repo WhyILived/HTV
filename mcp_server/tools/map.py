@@ -379,13 +379,14 @@ class MapPipeline:
         return results
 
 
-async def generate_background_from_prompt(user_prompt: str, scene_type: str) -> str:
+async def generate_background_from_prompt(user_prompt: str, scene_type: str, custom_name: str = None) -> str:
     """
     Generate a background image from user prompt and scene type.
     
     Args:
         user_prompt: Custom description for the background
         scene_type: One of "room", "futuristic_room", "nature", "halls", "market", "misc"
+        custom_name: Optional custom name for the generated file (defaults to background_{scene_type})
     
     Returns:
         Result message with generation status
@@ -398,9 +399,10 @@ async def generate_background_from_prompt(user_prompt: str, scene_type: str) -> 
         return f"ERROR: Invalid scene type: {scene_type}. Must be one of: {valid_scene_types}"
     
     try:
-        # Create config
+        # Create config with custom name if provided
+        name = custom_name if custom_name else f"background_{scene_type}"
         config = MapConfig(
-            name=f"background_{scene_type}",
+            name=name,
             scene_type=scene_type,
             custom_prompt=user_prompt,
             background_color="#ea00ff",
