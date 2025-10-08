@@ -183,7 +183,6 @@ def main():
     output_file = "assets/background_space_key_processed.png"
     
     # Process with high tolerance
-    #something
     success = process_background_collision_with_tolerance(
         input_file,
         output_file,
