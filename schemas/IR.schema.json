@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "IR.schema.json",
+  "title": "Interactive Representation (IR) Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Overview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "ref": { "type": "string" },
+        "plot": { "type": "string" },
+        "stage": { "type": "string" },
+        "act": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["title", "ref", "plot", "stage", "act"]
+    },
+    "Main_Character": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["man", "woman", "robot", "misc"] },
+        "visual": { "type": "string" },
+        "level": { "type": "integer", "minimum": 0 },
+        "stats": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "strength": { "type": "integer", "minimum": 0 },
+            "vitality": { "type": "integer", "minimum": 0 },
+            "intelligence": { "type": "integer", "minimum": 0 }
+          },
+          "required": ["strength", "vitality", "intelligence"]
+        }
+      },
+      "required": ["name", "type", "visual", "level", "stats"]
+    },
+    "Acts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "integer", "minimum": 1 },
+          "plot_dev": { "type": "string" },
+          "scene": { "type": "string" },
+          "required_characters": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["id", "plot_dev", "scene", "required_characters"]
+      }
+    },
+    "Characters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "visual": { "type": "string" },
+          "type": { "type": "string", "enum": ["man", "woman", "robot", "misc"] }
+        },
+        "required": ["name", "visual", "type"]
+      }
+    },
+    "Dialogue": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "number" },
+          "interaction": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "dalog": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            },
+            "required": ["name", "dalog"]
+          },
+          "cutscenes": { "type": "string" }
+        },
+        "required": ["id", "interaction", "cutscenes"]
+      }
+    }
+  },
+  "required": ["Overview", "Main_Character", "Acts", "Characters", "Dialogue"]
+}
+

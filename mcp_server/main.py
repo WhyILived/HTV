@@ -9,6 +9,7 @@ from mcp.types import Tool, TextContent
 
 # Import our custom tools
 from .tools.sprite_from_storyline_pipeline import generate_sprites_from_storyline
+from .tools.dialogue_pipeline import generate_dialogues
 from .tools.storyline_pipeline import build_storyline_pipeline
 
 # Create MCP server
@@ -93,6 +94,18 @@ async def list_tools() -> list[Tool]:
                 "type": "object",
                 "properties": {
                     "storyline_file": {"type": "string", "description": "Path to the storyline JSON file", "default": "storyline.json"}
+                },
+                "required": []
+            }
+        ),
+        Tool(
+            name="generate_dialogues_from_storyline",
+            description="Generate MP3 dialogue lines with ElevenLabs for characters and cutscenes from the storyline, saving to game/assets/dialogues.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "storyline_file": {"type": "string", "description": "Path to the storyline JSON file", "default": "storyline.json"},
+                    "force": {"type": "boolean", "description": "Overwrite existing audio files", "default": False}
                 },
                 "required": []
             }
@@ -185,6 +198,15 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
             return [TextContent(type="text", text="✅ Sprite generation completed - check mcp_output/spritesheets/ for results")]
         except Exception as e:
             return [TextContent(type="text", text=f"❌ Error generating sprites: {str(e)}")]
+    
+    elif name == "generate_dialogues_from_storyline":
+        try:
+            storyline_file = arguments.get("storyline_file", "storyline.json")
+            force = bool(arguments.get("force", False))
+            msg = generate_dialogues(storyline_file, force=force)
+            return [TextContent(type="text", text=f"✅ {msg}")]
+        except Exception as e:
+            return [TextContent(type="text", text=f"❌ Error generating dialogues: {str(e)}")]
     
     raise ValueError(f"Unknown tool: {name}")
 

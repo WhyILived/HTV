@@ -1,0 +1,423 @@
+{
+  "game": {
+    "game": {
+      "title": "Interstellar: Pixel Odyssey",
+      "genre": "Adventure",
+      "plot": "In 'Interstellar: Pixel Odyssey,' players take on the role of Cooper, a former NASA pilot turned farmer in a near-future Earth facing a global food crisis. When mysterious gravitational anomalies lead Cooper and his team to a hidden NASA base, they discover a wormhole near Saturn that may hold the key to humanity's survival. Players must navigate through various 2D pixel-art levels, piloting spacecraft, solving physics-based puzzles, and managing resources to explore new worlds on the other side of the wormhole. Along the way, they encounter time dilation effects, alien civilizations, and moral dilemmas as they strive to find a habitable planet for humanity's future. Will players unravel the mysteries of the universe and make the ultimate sacrifice for the greater good?",
+      "reference_media": "Interstellar"
+    }
+  },
+  "main_character": {
+    "main_character": {
+      "name": "Cooper",
+      "type": "male",
+      "visual_description": "Wearing a worn-out NASA jumpsuit with a patch bearing the NASA logo, Cooper sports a rugged and determined look. His pixelated face shows signs of experience and resilience.",
+      "class": "Pilot Explorer",
+      "level": 1,
+      "stats": {
+        "strength": 7,
+        "dexterity": 8,
+        "intelligence": 6,
+        "charisma": 5,
+        "luck": 5
+      },
+      "dialogue": [
+        {
+          "Professor Brand": [
+            "Explore further",
+            "Proceed with caution"
+          ]
+        },
+        {
+          "Professor Brand": [
+            "Upgrade engines",
+            "Enhance shield systems"
+          ]
+        },
+        {
+          "Professor Brand": [
+            "Attempt communication",
+            "Observe from a distance"
+          ]
+        }
+      ],
+      "inventory": {
+        "weapons": [
+          "Cosmic Blaster"
+        ],
+        "armor": [
+          "NASA Suit"
+        ],
+        "accessories": [
+          "Locket of Earth"
+        ]
+      }
+    }
+  },
+  "characters": {
+    "characters": [
+      {
+        "name": "Professor Brand",
+        "role": "mentor",
+        "type": "male",
+        "visual_description": "Wearing a lab coat with glasses, Professor Brand exudes wisdom and determination.",
+        "dialogue": [
+          {
+            "Cooper": [
+              "Explore further",
+              "Proceed with caution"
+            ]
+          },
+          {
+            "Cooper": [
+              "Upgrade engines",
+              "Enhance shield systems"
+            ]
+          },
+          {
+            "Cooper": [
+              "Attempt communication",
+              "Observe from a distance"
+            ]
+          }
+        ],
+        "mood": "stoic"
+      },
+      {
+        "name": "Amelia",
+        "role": "engineer",
+        "type": "female",
+        "visual_description": "Donning a practical jumpsuit with tools at her belt, Amelia is ready to fix any spacecraft malfunction.",
+        "dialogue": [],
+        "mood": "brave"
+      },
+      {
+        "name": "TARS",
+        "role": "robot companion",
+        "type": "robot",
+        "visual_description": "A rectangular robot with rotating limbs, TARS provides witty banter and crucial support in missions.",
+        "dialogue": [],
+        "mood": "witty"
+      },
+      {
+        "name": "Murph",
+        "role": "quest-giver",
+        "type": "female",
+        "visual_description": "In a simple dress with a determined expression, Murph guides players on significant missions.",
+        "dialogue": [],
+        "mood": "optimistic"
+      },
+      {
+        "name": "Dr. Mann",
+        "role": "antagonist lieutenant",
+        "type": "male",
+        "visual_description": "Dressed in a scientist's outfit, Dr. Mann's deceptive smile hints at hidden motives.",
+        "dialogue": [],
+        "mood": "scheming"
+      }
+    ]
+  },
+  "acts": {
+    "acts": [
+      {
+        "id": 1,
+        "title": "Act 1: Wormhole Discovery",
+        "setting": "Hidden NASA base near Saturn",
+        "characters": [
+          "Cooper",
+          "Professor Brand",
+          "Amelia"
+        ],
+        "dialogue": [
+          {
+            "speaker": "Professor Brand",
+            "line": "What are these mysterious gravitational anomalies?"
+          },
+          {
+            "speaker": "Cooper",
+            "line": "They indicate the presence of a wormhole near Saturn."
+          },
+          {
+            "speaker": "Cooper",
+            "line": "A wormhole? Could it be our way out of the food crisis on Earth?"
+          }
+        ],
+        "interaction": {
+          "asker": "Professor Brand",
+          "addressee": "Cooper",
+          "answer_options": [
+            "Explore further",
+            "Proceed with caution"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "title": "Act 2: Spacecraft Preparation",
+        "setting": "NASA base hangar preparing for space travel",
+        "characters": [
+          "Cooper"
+        ],
+        "dialogue": [
+          {
+            "speaker": "Professor Brand",
+            "line": "How can we navigate through the wormhole safely?"
+          },
+          {
+            "speaker": "Cooper",
+            "line": "We'll need to modify the spacecraft for interstellar travel."
+          }
+        ],
+        "interaction": {
+          "asker": "Professor Brand",
+          "addressee": "Cooper",
+          "answer_options": [
+            "Upgrade engines",
+            "Enhance shield systems"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "title": "Act 3: Alien Encounter",
+        "setting": "Unknown planet on the other side of the wormhole",
+        "characters": [
+          "Cooper"
+        ],
+        "dialogue": [
+          {
+            "speaker": "Professor Brand",
+            "line": "Who are these strange beings on this planet?"
+          },
+          {
+            "speaker": "Cooper",
+            "line": "They seem peaceful, but let's proceed cautiously."
+          }
+        ],
+        "interaction": {
+          "asker": "Professor Brand",
+          "addressee": "Cooper",
+          "answer_options": [
+            "Attempt communication",
+            "Observe from a distance"
+          ]
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "scenes": [
+      {
+        "id": 1,
+        "title": "Act 1: Wormhole Discovery",
+        "setting": "Hidden NASA base near Saturn",
+        "characters": [
+          "Cooper",
+          "Professor Brand",
+          "Amelia"
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Act 2: Spacecraft Preparation",
+        "setting": "NASA base hangar preparing for space travel",
+        "characters": [
+          "Cooper"
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Act 3: Alien Encounter",
+        "setting": "Unknown planet on the other side of the wormhole",
+        "characters": [
+          "Cooper"
+        ]
+      }
+    ]
+  },
+  "skill_tree": {
+    "skill_tree": [
+      {
+        "branch": "Combat Skills",
+        "skills": [
+          {
+            "name": "Cosmic Blast",
+            "effect": "Unleash a powerful energy blast that damages enemies",
+            "requirements": [
+              "Level 3"
+            ]
+          },
+          {
+            "name": "Gravity Shield",
+            "effect": "Create a protective shield that blocks incoming attacks",
+            "requirements": [
+              "Level 5",
+              "Upgrade engines"
+            ]
+          },
+          {
+            "name": "Space Maneuver",
+            "effect": "Perform a skillful evasive maneuver to dodge enemy projectiles",
+            "requirements": [
+              "Level 2"
+            ]
+          }
+        ]
+      },
+      {
+        "branch": "Exploration Skills",
+        "skills": [
+          {
+            "name": "Astral Navigation",
+            "effect": "Navigate accurately through space to reach distant planets",
+            "requirements": [
+              "Level 4"
+            ]
+          },
+          {
+            "name": "Alien Communication",
+            "effect": "Communicate effectively with alien species to gain valuable information",
+            "requirements": [
+              "Level 6",
+              "Attempt communication"
+            ]
+          },
+          {
+            "name": "Resource Management",
+            "effect": "Efficiently manage spacecraft resources for extended journeys",
+            "requirements": [
+              "Level 3"
+            ]
+          }
+        ]
+      },
+      {
+        "branch": "Tech Skills",
+        "skills": [
+          {
+            "name": "Astro-Engineering",
+            "effect": "Repair and modify spacecraft systems for optimal performance",
+            "requirements": [
+              "Level 4"
+            ]
+          },
+          {
+            "name": "Robotics Expertise",
+            "effect": "Enhance robot companion's capabilities for strategic advantage",
+            "requirements": [
+              "Level 5"
+            ]
+          },
+          {
+            "name": "Gravity Manipulation",
+            "effect": "Control gravitational forces to solve puzzles and overcome obstacles",
+            "requirements": [
+              "Upgrade engines"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "weapons": {
+    "weapons": [
+      {
+        "name": "Quantum Phaser",
+        "description": "A high-tech weapon that fires bursts of quantum energy, capable of penetrating shields and armor.",
+        "damage": 25,
+        "requirements": [
+          "Level 5",
+          "Upgrade engines"
+        ]
+      },
+      {
+        "name": "Singularity Sword",
+        "description": "A blade infused with the power of a collapsing black hole, able to slice through even the toughest materials.",
+        "damage": 30,
+        "requirements": [
+          "Level 8",
+          "Gravity Shield"
+        ]
+      },
+      {
+        "name": "Plasma Pistol",
+        "description": "A compact sidearm that shoots searing plasma projectiles, effective at close to medium range combat.",
+        "damage": 20,
+        "requirements": [
+          "Level 3"
+        ]
+      },
+      {
+        "name": "Photon Blaster",
+        "description": "A rapid-fire energy weapon that unleashes a barrage of photon beams, overwhelming enemies with sheer firepower.",
+        "damage": 18,
+        "requirements": [
+          "Level 4",
+          "Astro-Engineering"
+        ]
+      },
+      {
+        "name": "Neutrino Cannon",
+        "description": "A heavy artillery weapon that fires concentrated neutrino blasts, causing massive destructive impacts.",
+        "damage": 35,
+        "requirements": [
+          "Level 10",
+          "Gravity Manipulation"
+        ]
+      }
+    ]
+  },
+  "cutscenes": {
+    "cutscenes": [
+      {
+        "id": 1,
+        "title": "Wormhole Discovery",
+        "description": "Cooper, Professor Brand, and Amelia uncover a mysterious wormhole near Saturn.",
+        "dialogue": [
+          {
+            "speaker": "Professor Brand",
+            "line": "What are these mysterious gravitational anomalies?"
+          },
+          {
+            "speaker": "Cooper",
+            "line": "They indicate the presence of a wormhole near Saturn."
+          },
+          {
+            "speaker": "Cooper",
+            "line": "A wormhole? Could it be our way out of the food crisis on Earth?"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Spacecraft Modification",
+        "description": "Cooper and Professor Brand modify the spacecraft for interstellar travel.",
+        "dialogue": [
+          {
+            "speaker": "Professor Brand",
+            "line": "How can we navigate through the wormhole safely?"
+          },
+          {
+            "speaker": "Cooper",
+            "line": "We'll need to upgrade the engines for interstellar travel."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Alien Diplomacy",
+        "description": "Cooper encounters a peaceful alien civilization on a distant planet.",
+        "dialogue": [
+          {
+            "speaker": "Professor Brand",
+            "line": "Who are these strange beings on this planet?"
+          },
+          {
+            "speaker": "Cooper",
+            "line": "They seem peaceful, but let's proceed cautiously."
+          }
+        ]
+      }
+    ]
+  }
+}

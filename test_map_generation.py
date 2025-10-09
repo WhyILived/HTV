@@ -18,25 +18,17 @@ async def main():
     # Test different scene types
     test_cases = [
         {
-            "prompt": "The Space Ship control room with space to move around from the movie Interstellar, make it look really nice.",
+            "prompt": "A martian desert from the movie Interstellar",
             "scene_type": "futuristic_room"
         },
         {
-            "prompt": "A mystical forest with ancient trees and glowing mushrooms",
-            "scene_type": "nature"
+            "prompt": "A space ship control room from the movie Interstellar",
+            "scene_type": "futuristic_room"
         },
         {
-            "prompt": "A grand palace corridor with marble floors and golden chandeliers, similar to the one from the movie Frozen. Make it look really nice.",
-            "scene_type": "halls"
+            "prompt": "A hall from the movie Interstellar",
+            "scene_type": "futuristic_room"
         },
-        {
-            "prompt": "A bustling Arabian marketplace with colorful tents and merchants, similar to the one from the movie Aladdin. Make it look really nice. DO NOT HAVE ANY CHARACTERS IN THE BACKGROUND.",
-            "scene_type": "market"
-        },
-        {
-            "prompt": "A magical laboratory with floating crystals and alchemical equipment",
-            "scene_type": "misc"
-        }
     ]
     
     for i, test_case in enumerate(test_cases, 1):

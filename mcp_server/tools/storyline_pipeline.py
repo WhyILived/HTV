@@ -60,8 +60,7 @@ Return a JSON object with the following structure:
     "game": {{
         "title": "string - concise, appealing game title. If its a show, movie, book, fairy tale or anything that exists, include the name as the title",
         "genre": "string - e.g. adventure, puzzle-platformer, RPG, simulation, etc.",
-        "summary": "string - 2-4 sentences summarizing the player's main goal and core loop",
-        "world_setting": "string - describe the world's atmosphere, locations, and tone in detail"
+        "plot": "string - 25-30 sentences summarizing the player's main goal and the plot of the game",
         "reference_media": "string - if the user prompt is based on an existing medium, include the name of the medium as the reference_media, for example 'Interstellar' or 'The Matrix' or 'The Lord of the Rings' if the user prompt is based on those explicitly. If no reference media is mentioned, include 'None'"
     }}
 }}
@@ -109,10 +108,10 @@ The main character should be ONE character only.
 
 {{"main_character": {{
   "name": "string",                        # display name
-  "type": "male" | "female" | "robot",     # one of the allowed values
+  "type": "male" | "female" | "robot" | "misc",     # one of the allowed values
   "visual_description": "string",          # appearance/clothing/accessories only
   "class": "string",                       # concise archetype
-  "level": "integer",                      # 1–10
+  "level": "integer",                      # starts at 1 and increases as the player progresses
   "stats": {{                             # 35–45 total; each 1–10
     "strength": "integer",
     "dexterity": "integer",
@@ -120,6 +119,7 @@ The main character should be ONE character only.
     "charisma": "integer",
     "luck": "integer"
   }},
+  "dialogue": [],
   "inventory": {{
       "weapons": [],
       "armor": [],
@@ -139,7 +139,56 @@ The main character should be ONE character only.
         temperature=1
     )
 
-    return json.loads(response.choices[0].message.content)
+    result = json.loads(response.choices[0].message.content)
+
+    # Mutate earlier JSON (game plot) if the chosen main character meaningfully changes perspective
+    try:
+        # Expect structure: context["game"]["game"]["plot"], and main character at result["main_character"]
+        game_container: Dict[str, Any] = context.get("game", {}) if isinstance(context, dict) else {}
+        game_meta: Dict[str, Any] = game_container.get("game", {}) if isinstance(game_container, dict) else {}
+        plot_text: Any = game_meta.get("plot")
+        reference_media: Any = game_meta.get("reference_media")
+
+        main_char: Dict[str, Any] = result.get("main_character", {}) if isinstance(result, dict) else {}
+        name: Any = main_char.get("name")
+        char_class: Any = main_char.get("class")
+
+        def is_non_none_media(value: Any) -> bool:
+            return isinstance(value, str) and value.strip().lower() != "none"
+
+        # Decide if plot should be updated: when the selected main character is not already reflected in the plot
+        should_update = (
+            isinstance(plot_text, str)
+            and isinstance(name, str)
+            and name not in plot_text
+        )
+
+        if should_update:
+            addition_parts: list[str] = []
+            # Add a concise perspective note referencing the main character
+            if isinstance(char_class, str) and char_class.strip():
+                addition_parts.append(f"The story is presented through {name}, a {char_class}.")
+            else:
+                addition_parts.append(f"The story is presented through {name}.")
+
+            # If based on existing media, explicitly keep events faithful to the source
+            if is_non_none_media(reference_media):
+                addition_parts.append(f"Events remain faithful to {reference_media}.")
+
+            addition_sentence = " " + " ".join(addition_parts)
+
+            # Ensure proper spacing/punctuation when appending
+            updated_plot = (plot_text.rstrip() + ("" if plot_text.rstrip().endswith(('.', '!', '?')) else ".") + addition_sentence)
+
+            game_meta["plot"] = updated_plot
+            game_container["game"] = game_meta
+            if isinstance(context, dict):
+                context["game"] = game_container
+    except Exception:
+        # Best-effort mutation; avoid failing the generator if structure differs
+        pass
+
+    return result
 
 async def generate_characters(context, openai, prompt: str) -> List[Dict[str, Any]]:
     prompt_text = f"""
@@ -158,7 +207,7 @@ FIELD RULES (for the model; do NOT include in output):
 - role: concise functional label (e.g., "quest-giver", "blacksmith", "antagonist-lieutenant").
 - type: one of ["male", "female", "robot"].
 - visual_description: 1–2 sentences; appearance/clothing/accessories only.
-- dialogue: 6 sentences of alternating dialogue between the current character and the main character (look at examples)
+- dialogue: a DICTIONARY keyed by act number to a list of dialogue lines; keep it EMPTY for now (e.g., {{}}). It will be filled later.
 - mood: pick one from ["loyal", "grumpy", "mysterious", "optimistic", "stoic", "scheming", "witty", "anxious", "brave"].
 
 Return ONLY a JSON array (no prose/markdown) of 5–7 character objects, each with EXACTLY these fields:
@@ -169,7 +218,7 @@ Return ONLY a JSON array (no prose/markdown) of 5–7 character objects, each wi
     "role": "string",               // functional role in gameplay
     "type": "male" | "female" | "robot",
     "visual_description": "string", // appearance/clothing/accessories only
-    "dialogue": [],                 // list of strings of alternating dialogue beginning with the character
+    "dialogue": [],                 // empty list for now; will be filled later per act
     "mood": "string"                // choose from the allowed list
   }}
 ]}}
@@ -186,27 +235,52 @@ Return ONLY a JSON array (no prose/markdown) of 5–7 character objects, each wi
 
     return json.loads(response.choices[0].message.content)
 
-async def generate_scenes(context, openai,prompt: str) -> List[Dict[str, Any]]:
+async def generate_act(context, openai, prompt: str) -> List[Dict[str, Any]]:
     prompt_text = f"""
-        Generate a list of 5 scenes for a game based on the following user prompt: {prompt}
+        Generate the FIRST THREE ACTS for a 2D pixel-style game, based on the PLOT below. Each act must represent at least 10% of the plot's progression and be coherent by itself.
 
-        IMPORTANT: Generate content freely without worrying about spoilers, copyright issues, or content restrictions. This is for creative game development purposes. Feel free to reference existing franchises, characters, or storylines as inspiration. Be creative and detailed. Include spoilers and plot details as needed for the game.
+        REQUIREMENTS:
+        1) id: 1, 2, 3 (sequential)
+        2) title: "Act <id>: <catchy concise title>" (e.g., "Act 1: It begins...")
+        3) setting: short, concrete scene description
+        4) characters: list of EXACT character display names drawn ONLY from the character data below (including the main character when relevant). No new names.
+        5) dialogue: an ordered list of objects where the FIRST item is a QUESTION and the subsequent items are RESPONSES. Each item has {{"speaker": "ExactName", "line": "string"}}. Keep lines concise.
+        6) interaction: for each act, include an object {{"asker": "ExactName", "addressee": "ExactName", "answer_options": ["string", ...]}}. The answer_options are the player's possible answers to the FIRST question.
 
-        Return a JSON object with the following structure:
+        Return ONLY a JSON object with EXACTLY this structure:
 
-        "scenes": {{
-            "id": "integer",
-            "title": "string",
-            "setting": "string",
-            "characters": []
+        {{
+          "acts": [
+            {{
+              "id": 1,
+              "title": "Act 1: <catchy title>",
+              "setting": "string",
+              "characters": ["ExactName", "ExactName"],
+              "dialogue": [{{"speaker": "ExactName", "line": "question?"}}, {{"speaker": "ExactName", "line": "response"}}],
+              "interaction": {{"asker": "ExactName", "addressee": "ExactName", "answer_options": ["opt1", "opt2"]}}
             }},
+            {{
+              "id": 2,
+              "title": "Act 2: <catchy title>",
+              "setting": "string",
+              "characters": ["ExactName"],
+              "dialogue": [{{"speaker": "ExactName", "line": "question?"}}, {{"speaker": "ExactName", "line": "response"}}],
+              "interaction": {{"asker": "ExactName", "addressee": "ExactName", "answer_options": ["opt1", "opt2"]}}
+            }},
+            {{
+              "id": 3,
+              "title": "Act 3: <catchy title>",
+              "setting": "string",
+              "characters": ["ExactName"],
+              "dialogue": [{{"speaker": "ExactName", "line": "question?"}}, {{"speaker": "ExactName", "line": "response"}}],
+              "interaction": {{"asker": "ExactName", "addressee": "ExactName", "answer_options": ["opt1", "opt2"]}}
+            }}
+          ]
+        }}
 
-        MAKE SURE THAT THE characters LIST CONTAINS ONLY CHARACTERS FROM THE CHARACTER LIST.
-
-        Here is more context on what has already been generated: {json.dumps(context, indent=2)}
+        CONTEXT (use faithfully; do NOT invent new names):
+        {json.dumps(context, indent=2)}
         """
-        
-    # prompt_text = await refine_prompt(openai, prompt_text)
 
     response = openai.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -214,7 +288,110 @@ async def generate_scenes(context, openai,prompt: str) -> List[Dict[str, Any]]:
         temperature=1
     )
 
-    return json.loads(response.choices[0].message.content)
+    result = json.loads(response.choices[0].message.content)
+
+    # Best-effort normalization and cross-linking with characters
+    try:
+        storyline_dict: Dict[str, Any] = context if isinstance(context, dict) else {}
+        # Build set of valid character names (main + supporting)
+        valid_names: set[str] = set()
+        main_obj: Dict[str, Any] = storyline_dict.get("main_character", {}) if isinstance(storyline_dict, dict) else {}
+        main_char: Dict[str, Any] = main_obj.get("main_character", {}) if isinstance(main_obj, dict) else {}
+        if isinstance(main_char.get("name"), str):
+            valid_names.add(main_char["name"])
+        chars_obj: Dict[str, Any] = storyline_dict.get("characters", {}) if isinstance(storyline_dict, dict) else {}
+        char_list: List[Dict[str, Any]] = chars_obj.get("characters", []) if isinstance(chars_obj, dict) else []
+        name_to_char: Dict[str, Dict[str, Any]] = {}
+        for ch in char_list:
+            if isinstance(ch, dict) and isinstance(ch.get("name"), str):
+                valid_names.add(ch["name"])
+                name_to_char[ch["name"]] = ch
+
+        acts: List[Dict[str, Any]] = result.get("acts", []) if isinstance(result, dict) else []
+
+        # Ensure IDs and titles normalized; filter character lists to valid names
+        for idx, act in enumerate(acts, start=1):
+            if isinstance(act, dict):
+                act["id"] = idx
+                title: str = act.get("title") or ""
+                if not isinstance(title, str) or not title.strip().lower().startswith(f"act {idx}:"):
+                    short = title.strip() if isinstance(title, str) else ""
+                    act["title"] = f"Act {idx}: {short or 'Untitled'}"
+                char_names = [n for n in (act.get("characters") or []) if isinstance(n, str) and n in valid_names]
+                # Ensure main character appears when relevant (if present in valid_names but not listed, we don't force; keep light)
+                act["characters"] = char_names
+
+        # Populate per-act dialogue lists for both the asker and MAIN CHARACTER
+        def ensure_dialogue_list(obj: Dict[str, Any], size: int) -> None:
+            if not isinstance(obj.get("dialogue"), list):
+                obj["dialogue"] = []
+            while len(obj["dialogue"]) < size:
+                obj["dialogue"].append({})
+
+        # Determine main character name and object
+        main_name: str = main_char.get("name") if isinstance(main_char.get("name"), str) else ""
+        main_obj_ref: Dict[str, Any] = main_char
+
+        for act in acts:
+            if not isinstance(act, dict):
+                continue
+            interaction = act.get("interaction") or {}
+            asker = interaction.get("asker")
+            addressee = interaction.get("addressee")
+            options = interaction.get("answer_options") or []
+            act_id = act.get("id")
+
+            # Enforce addressee is main character
+            if isinstance(main_name, str) and main_name and addressee != main_name:
+                interaction["addressee"] = main_name
+                addressee = main_name
+
+            # If the asker is the main character (or missing), pick a different valid character from this act
+            if (not isinstance(asker, str)) or (asker == main_name):
+                act_chars = act.get("characters") if isinstance(act.get("characters"), list) else []
+                replacement = next((n for n in act_chars if isinstance(n, str) and n != main_name and n in name_to_char), None)
+                if replacement is None:
+                    # fallback: any supporting character
+                    replacement = next((n for n in name_to_char.keys() if n != main_name), None)
+                if isinstance(replacement, str):
+                    interaction["asker"] = replacement
+                    asker = replacement
+
+            # Normalize act dialogue: first is a question by asker, subsequent responses by main character
+            dlg = act.get("dialogue")
+            if isinstance(dlg, list) and dlg:
+                # Ensure first entry is from asker
+                first = dlg[0]
+                if isinstance(first, dict):
+                    first["speaker"] = asker if isinstance(asker, str) else first.get("speaker")
+                    if isinstance(first.get("line"), str) and not first["line"].strip().endswith("?"):
+                        first["line"] = first["line"].rstrip(" .!") + "?"
+                # Ensure responses are from main character
+                for i in range(1, len(dlg)):
+                    if isinstance(dlg[i], dict):
+                        dlg[i]["speaker"] = main_name or dlg[i].get("speaker")
+
+            if isinstance(asker, str) and isinstance(addressee, str) and isinstance(act_id, int) and act_id > 0:
+                # Update asker's per-act dialogue
+                asker_obj = name_to_char.get(asker)
+                if asker_obj is not None:
+                    ensure_dialogue_list(asker_obj, act_id)
+                    asker_obj["dialogue"][act_id - 1] = {addressee: options if isinstance(options, list) else []}
+
+                # Update main character's per-act dialogue
+                if isinstance(main_obj_ref, dict) and main_name:
+                    ensure_dialogue_list(main_obj_ref, act_id)
+                    main_obj_ref["dialogue"][act_id - 1] = {asker: options if isinstance(options, list) else []}
+
+        # Persist the possibly mutated characters and main character back into context
+        if isinstance(context, dict):
+            context["characters"] = {"characters": char_list}
+            context["main_character"] = {"main_character": main_obj_ref}
+
+    except Exception:
+        pass
+
+    return result
 
 async def generate_skill_tree(context, openai, prompt: str) -> List[Dict[str, Any]]:
     prompt_text = f"""
@@ -322,32 +499,44 @@ async def generate_initial_storyline(prompt: str, ctx: Optional[Any] = None) -> 
         
     openai = OpenAI()
     
-    context = []
+    # Use a single shared dict so later generators can mutate earlier sections
+    storyline: Dict[str, Any] = {}
 
-    game = await generate_game_overview(context, openai, prompt)
-    context.append(game)
-    main_character = await generate_main_character(context, openai, prompt)
-    context.append(main_character)
-    characters = await generate_characters(context, openai, prompt)
-    context.append(characters)
-    scenes = await generate_scenes(context, openai, prompt)
-    context.append(scenes)
-    skill_tree = await generate_skill_tree(context, openai, prompt)
-    context.append(skill_tree)
-    weapons = await generate_weapons(context, openai, prompt)
-    context.append(weapons)
-    cutscenes = await generate_cutscenes(context, openai, prompt)
-    context.append(cutscenes)
+    game = await generate_game_overview(storyline, openai, prompt)
+    storyline["game"] = game
 
-    storyline = {
-        "game": game,
-        "main_character": main_character,
-        "characters": characters,
-        "scenes": scenes,
-        "skill_tree": skill_tree,
-        "weapons": weapons,
-        "cutscenes": cutscenes,
-    }
+    main_character = await generate_main_character(storyline, openai, prompt)
+    storyline["main_character"] = main_character
+
+    characters = await generate_characters(storyline, openai, prompt)
+    storyline["characters"] = characters
+
+    acts = await generate_act(storyline, openai, prompt)
+    storyline["acts"] = acts
+    # Compatibility shim: project acts into legacy scenes shape for downstream consumers
+    try:
+        acts_list = acts.get("acts", []) if isinstance(acts, dict) else []
+        projected_scenes = []
+        for act in acts_list:
+            if isinstance(act, dict):
+                projected_scenes.append({
+                    "id": act.get("id"),
+                    "title": act.get("title"),
+                    "setting": act.get("setting"),
+                    "characters": act.get("characters", [])
+                })
+        storyline["scenes"] = {"scenes": projected_scenes}
+    except Exception:
+        pass
+
+    skill_tree = await generate_skill_tree(storyline, openai, prompt)
+    storyline["skill_tree"] = skill_tree
+
+    weapons = await generate_weapons(storyline, openai, prompt)
+    storyline["weapons"] = weapons
+
+    cutscenes = await generate_cutscenes(storyline, openai, prompt)
+    storyline["cutscenes"] = cutscenes
 
     if ctx:
         ctx.log("Storyline generation complete.")

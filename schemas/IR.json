@@ -1,0 +1,46 @@
+{
+  "Overview": {
+    "title": "",
+    "ref": "",
+    "plot": "",
+    "stage": "",
+    "act": 0
+  },
+  "Main_Character": {
+    "name": "",
+    "type": "misc",
+    "visual": "",
+    "level": 1,
+    "stats": {
+      "strength": 0,
+      "vitality": 0,
+      "intelligence": 0
+    }
+  },
+  "Acts": [
+    {
+      "id": 1,
+      "plot_dev": "",
+      "scene": "",
+      "required_characters": []
+    }
+  ],
+  "Characters": [
+    {
+      "name": "",
+      "visual": "",
+      "type": "misc"
+    }
+  ],
+  "Dialogue": [
+    {
+      "id": 1,
+      "interaction": {
+        "name": "",
+        "dalog": []
+      },
+      "cutscenes": ""
+    }
+  ]
+}
+

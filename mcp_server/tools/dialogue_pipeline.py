@@ -150,8 +150,8 @@ def _get_elevenlabs_client() -> ElevenLabs:
 def _pick_fallback_voice_id(char_type: str) -> str:
     """Static fallback voices by type using public premade voices."""
     mapping = {
-        "male": "21m00Tcm4TlvDq8ikWAM",   # Adam
-        "female": "EXAVITQu4vr4xnSDxMaL", # Bella
+        "male": "wyWA56cQNU2KqUW4eCsI",   # Adam
+        "female": "NDTYOmYEjbDIVCKB35i3", # Bella
         "robot": "AZnzlk1XvdvUeBnXmlld",  # Arnold
     }
     return mapping.get(char_type, mapping["male"])
